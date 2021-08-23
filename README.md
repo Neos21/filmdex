@@ -16,6 +16,7 @@ $ ng new filmdex-client --skip-git --skip-tests --routing --style=scss
 $ npm install -g @nestjs/cli
 $ nest --version
 8.1.1
+$ nest new filmdex-server --skip-git --language=TypeScript --package-manager=npm
 ```
 
 
