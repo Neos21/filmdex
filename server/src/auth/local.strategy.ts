@@ -1,27 +1,32 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-local';
-
-import { AuthService } from './auth.service';
+import { Strategy as BaseLocalStrategy } from 'passport-local';  // JwtStrategy と親クラスを区別するために名前を付けておく
 
 /** Local Strategy : User Name と Password を使って認証を行うクラス */
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private authService: AuthService) { super(); }
+export class LocalStrategy extends PassportStrategy(BaseLocalStrategy) {
+  constructor() {
+    super({
+      usernameField: 'userName',  // ユーザ認証時に POST するキーをデフォルトの `username` (全小文字) から変更する
+      passwordField: 'password'
+    });
+  }
   
   /**
-   * ユーザ認証する
+   * パスワードを使用してユーザ認証する
    * 
    * - Passport が validate() という名前の関数を期待するためこの関数名で実装している
    * - 参考 : https://docs.nestjs.com/security/authentication
+   * - 参考 : https://zenn.dev/uttk/articles/9095a28be1bf5d
+   * - 参考 : https://qiita.com/ci7lus/items/4b481d1ae670fba7e137
    * 
    * @param userName User Name
    * @param password Password
+   * @return 認証成功時にユーザ情報を返す
    * @throws 認証失敗時
    */
-  async validate(username: string, password: string): Promise<{ userName: string; password: string; }> {
-    const auth = await this.authService.validateUser(username, password);
-    if(!auth) throw new UnauthorizedException();
-    return auth;
+  public async validate(userName: string, password: string): Promise<{ userName: string; }> {
+    if(userName !== 'Neos21' || password !== 'changethis') throw new UnauthorizedException();  // TODO : ユーザ情報を別途管理する
+    return { userName };
   }
 }

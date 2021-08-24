@@ -1,18 +1,24 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
 
-import { AuthService } from './auth.service';
+import { authConstants } from './auth-constants';
 import { LocalStrategy } from './local.strategy';
+import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 
 /** 認証モジュール */
 @Module({
   imports: [
-    PassportModule
+    PassportModule,
+    JwtModule.register({
+      secret: authConstants.jwtSecretKey,  // JwtStrategy で指定しているものと同じ値を入れておかないと `secretOrPrivateKey must have a value` エラーが発生する
+      signOptions: {  expiresIn: authConstants.jwtTokenExpiresIn }  // JWT アクセストークンの有効期限 
+    })
   ],
   providers: [
-    AuthService,
-    LocalStrategy
+    LocalStrategy,
+    JwtStrategy
   ],
   controllers: [
     AuthController

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import { SessionTimeoutInterceptor } from './session-timeout.interceptor';
+import { CustomHttpInterceptor } from './custom-http.interceptor';
 
 /** Core Module */
 @NgModule({
@@ -10,10 +10,9 @@ import { SessionTimeoutInterceptor } from './session-timeout.interceptor';
     CommonModule
   ],
   providers: [
-    // クッキーによるセッション管理とリクエストタイムアウトを有効にする
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: SessionTimeoutInterceptor,
+      useClass: CustomHttpInterceptor,
       multi: true
     }
   ]

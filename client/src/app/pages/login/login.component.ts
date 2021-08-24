@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { AuthService } from '../../shared/auth.service';
+
+import { constants } from '../../shared/constants';
 import { AuthGuard } from '../../shared/auth.guard';
 
 /** Login Component */
@@ -17,40 +18,30 @@ export class LoginComponent implements OnInit {
   /** フィードバックメッセージ */
   public message: string = '';
   
-  /**
-   * コンストラクタ
-   * 
-   * @param formBuilder FormBuilder
-   * @param router Router
-   * @param authService AuthService
-   * @param authGuard AuthGuard
-   */
-  constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthService, private authGuard: AuthGuard) { }
+  constructor(private formBuilder: FormBuilder, private router: Router, private authGuard: AuthGuard) { }
   
   /** 画面初期表示時の処理 */
-  public async ngOnInit(): Promise<void> {
+  public ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
       userName: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
     
     // ログイン画面に遷移した時はログイン情報を削除しておく
-    this.authGuard.isLogined = false;
-    await this.authService.logout();
+    this.authGuard.logout();
   }
   
   /** 「Login」ボタン押下時の処理 */
-  public async onSubmit(): Promise<void> {
-    console.log('Login Component : On Submit');
+  public async onLogin(): Promise<void> {
     this.message = '';
     
     try {
-      await this.authService.login(this.loginForm.value.userName, this.loginForm.value.password);
-      this.authGuard.isLogined = true;
+      await this.authGuard.login(this.loginForm.value.userName, this.loginForm.value.password);
+      console.log('Login Component : On Login : Succeeded');
       this.router.navigate(['/home']);
     }
     catch(error) {
-      console.warn('Login Component : On Submit : Error', error);
+      console.warn('Login Component : On Login : Error', error);
       this.message = 'Failed To Login';
     }
   }
