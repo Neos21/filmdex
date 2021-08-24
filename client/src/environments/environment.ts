@@ -1,3 +1,7 @@
+/** 環境変数 (開発用) */
 export const environment = {
-  production: false
+  /** 本番環境モード */
+  production: false,
+  /** API サーバの URL・末尾スラッシュなし */
+  apiUrl: 'http://localhost:3000/api'
 };

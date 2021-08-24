@@ -1,0 +1,17 @@
+<h2>Login</h2>
+
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <dl>
+    <dt>User Name</dt>
+    <dd>
+      <p><input type="text" formControlName="userName"></p>
+    </dd>
+    <dt>Password</dt>
+    <dd>
+      <p><input type="password" formControlName="password"></p>
+    </dd>
+  </dl>
+  <p><button type="submit" [disabled]="loginForm.invalid">Login</button></p>
+</form>
+
+<p *ngIf="message">{{ message }}</p>
