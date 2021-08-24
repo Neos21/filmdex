@@ -16,8 +16,8 @@ export class AuthService {
    * 実行後、呼び出し元で AuthGuard#isLogined を true にすること
    * (循環参照が発生するためこの Service 内では AuthGuard を操作できない)
    * 
-   * @param userName ユーザ名
-   * @param password パスワード
+   * @param userName User Name
+   * @param password Password
    * @throws ログイン処理に失敗した場合
    */
   public async login(userName: string, password: string): Promise<void> {

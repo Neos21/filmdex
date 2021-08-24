@@ -1,13 +1,17 @@
 import { Controller, Get } from '@nestjs/common';
 
-import { AppService } from './app.service';
-
+/** App Controller */
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
+  /** `/` : ルートパス */
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  public root(): string {
+    return 'FilmDeX Server';
+  }
+  
+  /** `/api` : API ルートパス */
+  @Get('api')
+  public apiRoot(): string {
+    return 'FilmDeX API';
   }
 }
