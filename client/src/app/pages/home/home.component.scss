@@ -1,3 +1,12 @@
-h2 {
-  margin: 0;
+p.error-message {
+  margin-top: 0;
+}
+
+.films-table-wrapper {
+  overflow-x: auto;
+  
+  // 配下は子コンポーネント側で管理する
+  table.films-table {
+    margin: 0 auto;
+  }
 }

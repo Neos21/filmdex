@@ -1,20 +1,20 @@
-<h2>Home</h2>
-
 <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-<table *ngIf="errorMessage === ''">
-  <thead>
-    <tr>
-      <th>公開年</th>
-      <th>原題</th>
-      <th>邦題</th>
-      <th>あらすじ</th>
-      <th>感想</th>
-      <th>操作</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr app-films-table-row *ngFor="let film of films" [film]="film" (onUpdated)="onUpdated($event)"></tr>
-    <tr app-films-table-row [isNewForm]="true" (onCreated)="onCreated($event)"></tr>
-  </tbody>
-</table>
+<div *ngIf="errorMessage === ''" class="films-table-wrapper">
+  <table class="films-table">
+    <thead>
+      <tr>
+        <th>公開年</th>
+        <th>原題</th>
+        <th>邦題</th>
+        <th>あらすじ</th>
+        <th>感想</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr app-films-table-row *ngFor="let film of films" [film]="film" (onUpdated)="onUpdated($event)"></tr>
+      <tr app-films-table-row [isNewForm]="true" (onCreated)="onCreated($event)"></tr>
+    </tbody>
+  </table>
+</div>
