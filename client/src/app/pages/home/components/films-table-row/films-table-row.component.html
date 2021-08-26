@@ -1,0 +1,9 @@
+<td><input type="text" [(ngModel)]="film.publishedYear" placeholder="公開年" required maxlength="4"></td>
+<td><input type="text" [(ngModel)]="film.title"         placeholder="原題"   required></td>
+<td><input type="text" [(ngModel)]="film.japaneseTitle" placeholder="邦題"></td>
+<td><input type="text" [(ngModel)]="film.scenario"      placeholder="あらすじ"></td>
+<td><input type="text" [(ngModel)]="film.review"        placeholder="感想"></td>
+<td>
+  <button type="button" (click)="onCreate()" *ngIf="isNewForm" >登録</button>
+  <button type="button" (click)="onUpdate()" *ngIf="!isNewForm">更新</button>
+</td>

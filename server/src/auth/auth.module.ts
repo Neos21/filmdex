@@ -13,7 +13,7 @@ import { AuthController } from './auth.controller';
     PassportModule,
     JwtModule.register({
       secret: authConstants.jwtSecretKey,  // JwtStrategy で指定しているものと同じ値を入れておかないと `secretOrPrivateKey must have a value` エラーが発生する
-      signOptions: {  expiresIn: authConstants.jwtTokenExpiresIn }  // JWT アクセストークンの有効期限 
+      signOptions: { expiresIn: authConstants.jwtTokenExpiresIn }  // JWT アクセストークンの有効期限 
     })
   ],
   providers: [

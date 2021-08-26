@@ -9,7 +9,7 @@ import { constants } from './constants';
 /** 画面遷移時に認証チェックする */
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
-  /** ログインしたかどうか */
+  /** ログインしているか否か */
   public isLogined: boolean = false;
   
   constructor(private httpClient: HttpClient, private router: Router) { }
@@ -23,9 +23,7 @@ export class AuthGuard implements CanActivate {
    */
   public async canActivate(_activatedRouteSnapshot: ActivatedRouteSnapshot, _routerStateSnapshot: RouterStateSnapshot): Promise<boolean> {
     if(this.isLogined) return true;  // ログイン済なので遷移を許可する
-    
-    // 初回表示時は LocalStorage のデータを使用して自動再ログイン (JWT アクセストークン再発行) を試行する
-    return await this.reLogin();
+    return await this.reLogin();  // 初回表示時は LocalStorage のデータを使用して自動再ログイン (JWT アクセストークン再発行) を試行する
   }
   
   /**
@@ -43,10 +41,10 @@ export class AuthGuard implements CanActivate {
       window.localStorage.setItem(constants.localStorageKeyAuth, JSON.stringify(auth));
       window.localStorage.setItem(constants.localStorageKeyAccessToken, accessToken);
       this.isLogined = true;
-      console.log('Auth Guard : Login : Succeeded', auth);
+      console.log('Auth Guard : Login', auth);
     }
     catch(error) {
-      console.error('Auth Guard : Login : Error', error);
+      console.error('Auth Guard : Login', error);
       throw error;
     }
   }
@@ -67,9 +65,8 @@ export class AuthGuard implements CanActivate {
     }
     catch(error) {
       // 自動再ログインができなければ明示的にログアウト状態にしログインページに遷移する
-      console.warn('Auth Guard : Re Login : Failed, Redirect To Login Page', error);
-      this.logout();
-      this.router.navigate(['/login']);
+      console.error('Auth Guard : Re Login : Failed, Redirect To Login Page', error);
+      this.logout(true);
       return false;
     }
   }
@@ -79,11 +76,14 @@ export class AuthGuard implements CanActivate {
    * 
    * サーバサイドは JWT アクセストークンにて認証しているため、サーバサイドにはログアウトの概念はない
    * クライアントサイドで JWT アクセストークンを破棄してしまえば、いずれトークン有効期限が切れて再ログインが必要になる
+   * 
+   * @param needsNavigateToLoginPage true を指定した場合は /login への遷移も行う
    */
-  public logout(): void {
+  public logout(needsNavigateToLoginPage: boolean = false): void {
     window.localStorage.removeItem(constants.localStorageKeyAuth);
     window.localStorage.removeItem(constants.localStorageKeyAccessToken);
     this.isLogined = false;
+    if(needsNavigateToLoginPage) this.router.navigate(['/login']);
     console.log('Auth Guard : Logout');
   }
 }

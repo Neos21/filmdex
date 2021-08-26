@@ -2,6 +2,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy as BaseLocalStrategy } from 'passport-local';  // JwtStrategy と親クラスを区別するために名前を付けておく
 
+import { AuthInfo } from './auth-info';
+
 /** Local Strategy : User Name と Password を使って認証を行うクラス */
 @Injectable()
 export class LocalStrategy extends PassportStrategy(BaseLocalStrategy) {
@@ -25,8 +27,9 @@ export class LocalStrategy extends PassportStrategy(BaseLocalStrategy) {
    * @return 認証成功時にユーザ情報を返す
    * @throws 認証失敗時
    */
-  public async validate(userName: string, password: string): Promise<{ userName: string; }> {
+  public async validate(userName: string, password: string): Promise<AuthInfo> {
     if(userName !== 'Neos21' || password !== 'changethis') throw new UnauthorizedException();  // TODO : ユーザ情報を別途管理する
-    return { userName };
+    const authInfo: AuthInfo = { userName };  // new AuthInfo() とすると Expected "payload" to be a plain object エラーになってしまうためクラスにしない
+    return authInfo;
   }
 }

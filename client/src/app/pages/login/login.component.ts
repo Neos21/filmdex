@@ -2,11 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-
-import { constants } from '../../shared/constants';
 import { AuthGuard } from '../../shared/auth.guard';
 
-/** Login Component */
+/** 「ログイン」画面 */
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -15,8 +13,8 @@ import { AuthGuard } from '../../shared/auth.guard';
 export class LoginComponent implements OnInit {
   /** ログインフォーム */
   public loginForm!: FormGroup;
-  /** フィードバックメッセージ */
-  public message: string = '';
+  /** エラーメッセージ */
+  public errorMessage: string = '';
   
   constructor(private formBuilder: FormBuilder, private router: Router, private authGuard: AuthGuard) { }
   
@@ -26,23 +24,20 @@ export class LoginComponent implements OnInit {
       userName: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
-    
-    // ログイン画面に遷移した時はログイン情報を削除しておく
-    this.authGuard.logout();
+    this.authGuard.logout();  // ログイン画面に遷移した時はログイン情報を削除しておく
   }
   
   /** 「Login」ボタン押下時の処理 */
   public async onLogin(): Promise<void> {
-    this.message = '';
-    
+    this.errorMessage = '';
     try {
       await this.authGuard.login(this.loginForm.value.userName, this.loginForm.value.password);
-      console.log('Login Component : On Login : Succeeded');
+      console.log('Login Component : On Login');
       this.router.navigate(['/home']);
     }
     catch(error) {
-      console.warn('Login Component : On Login : Error', error);
-      this.message = 'Failed To Login';
+      console.error('Login Component : On Login', error);
+      this.errorMessage = 'Failed To Login';
     }
   }
 }

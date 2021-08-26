@@ -19,7 +19,9 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    // クラスプロパティの「初期化漏れ」を許容する (string 型のプロパティが undefined になるとエラーになるがコレを許容する)
+    "strictPropertyInitialization": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

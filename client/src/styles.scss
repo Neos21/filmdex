@@ -1,1 +1,6 @@
 @import '../node_modules/@neos21/neos-normalize/neos-normalize.css';
+
+.error-message {
+  color: var(--nn-colour-red);
+  font-weight: bold;
+}

@@ -29,11 +29,14 @@
     "@nestjs/jwt": "8.0.0",
     "@nestjs/passport": "8.0.1",
     "@nestjs/platform-express": "8.0.6",
+    "@nestjs/typeorm": "8.0.2",
     "passport": "0.4.1",
     "passport-jwt": "4.0.0",
     "passport-local": "1.0.0",
     "reflect-metadata": "0.1.13",
-    "rxjs": "7.3.0"
+    "rxjs": "7.3.0",
+    "sqlite3": "5.0.2",
+    "typeorm": "0.2.37"
   },
   "devDependencies": {
     "@nestjs/cli": "8.1.1",

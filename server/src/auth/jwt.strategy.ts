@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ExtractJwt, Strategy as BaseJwtStrategy } from 'passport-jwt';  // LocalStrategy と親クラスを区別するために名前を付けておく
 
 import { authConstants } from './auth-constants';
+import { AuthInfo } from './auth-info';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(BaseJwtStrategy) {
@@ -18,9 +19,9 @@ export class JwtStrategy extends PassportStrategy(BaseJwtStrategy) {
    * Payload を使用して認証する (特に独自にすることはないので Payload をそのまま返すのみ)
    * 
    * @param payload Payload (AuthService#login() で定義している)
-   * @return ユーザ情報
+   * @return 認証ユーザ情報
    */
-  public async validate(payload: { userName: string; }): Promise<{ userName: string; }> {
-    return { userName: payload.userName };
+  public async validate(payload: AuthInfo): Promise<AuthInfo> {
+    return new AuthInfo(payload.userName);
   }
 }

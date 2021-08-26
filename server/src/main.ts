@@ -11,7 +11,7 @@ async function bootstrap() {
     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
     credentials: true
   });
-  // 全てのパスの先頭に /api を付ける・トップの / のみヘルスチェック用に許可する
+  // 全てのパスの先頭に /api を付ける・トップのみヘルスチェック用に許可する
   app.setGlobalPrefix('api', {
     exclude: [
       { path: ''   , method: RequestMethod.GET },
