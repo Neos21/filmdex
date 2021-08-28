@@ -1,6 +1,24 @@
 @import '../node_modules/@neos21/neos-normalize/neos-normalize.css';
 
+input,
+button {
+  font-size: 16px;
+}
+
+[hidden] {
+  display: none;
+}
+
+.info-message {
+  color: var(--nn-colour-cyan);
+  font-weight: bold;
+}
+
 .error-message {
   color: var(--nn-colour-red);
   font-weight: bold;
+}
+
+.text-right {
+  text-align: right;
 }

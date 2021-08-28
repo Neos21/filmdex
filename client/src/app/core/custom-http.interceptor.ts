@@ -28,6 +28,6 @@ export class CustomHttpInterceptor implements HttpInterceptor {
     }
     
     // リクエストタイムアウトを設定する
-    return next.handle(request).pipe(timeout(10000));
+    return next.handle(request).pipe(timeout(3000));
   }
 }

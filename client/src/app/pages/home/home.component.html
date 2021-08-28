@@ -1,20 +1,38 @@
-<p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
-
-<div *ngIf="errorMessage === ''" class="films-table-wrapper">
+<p [hidden]="!isLoading"                                class="info-message" >読込中…          </p>
+<p [hidden]="isLoading || isSubmitting || errorMessage" class="text-right"   ><button type="button" (click)="onLoad()">Reload</button></p>
+<p [hidden]="isLoading || !isSubmitting"                class="info-message" >更新中…          </p>
+<p [hidden]="isLoading || !errorMessage"                class="error-message">{{ errorMessage }}</p>
+<form [formGroup]="filmsForm" class="films-table-wrapper" *ngIf="!isLoading">
   <table class="films-table">
     <thead>
       <tr>
-        <th>公開年</th>
-        <th>原題</th>
-        <th>邦題</th>
-        <th>あらすじ</th>
-        <th>感想</th>
-        <th>操作</th>
+        <th class="column-published-year">公開年</th>
+        <th class="column-title"         >原題</th>
+        <th class="column-japanese-title">邦題</th>
+        <th class="column-scenario"      >あらすじ</th>
+        <th class="column-review"        >感想</th>
+        <th class="column-operation"     >操作</th>
       </tr>
     </thead>
     <tbody>
-      <tr app-films-table-row *ngFor="let film of films" [film]="film" (onUpdated)="onUpdated($event)"></tr>
-      <tr app-films-table-row [isNewForm]="true" (onCreated)="onCreated($event)"></tr>
+      <ng-container formArrayName="films">
+        <tr *ngFor="let film of films.controls; let i = index" [formGroupName]="i" class="films-row">
+          <td><input type="text" formControlName="publishedYear" placeholder="公開年"   (blur)="onUpdate(film)" required minlength="4" maxlength="4" pattern="^[1-9][0-9]{3}$"></td>
+          <td><input type="text" formControlName="title"         placeholder="原題"     (blur)="onUpdate(film)" required                                                      ></td>
+          <td><input type="text" formControlName="japaneseTitle" placeholder="邦題"     (blur)="onUpdate(film)"                                                               ></td>
+          <td><input type="text" formControlName="scenario"      placeholder="あらすじ" (blur)="onUpdate(film)"                                                               ></td>
+          <td><input type="text" formControlName="review"        placeholder="感想"     (blur)="onUpdate(film)"                                                               ></td>
+          <td><button type="button" (click)="onUpdate(film)" [disabled]="film.pristine || film.invalid || isSubmitting">更新</button></td>
+        </tr>
+      </ng-container>
+      <tr formGroupName="newFilm" class="new-film-row">
+        <td><input type="text" formControlName="publishedYear" placeholder="公開年"   required minlength="4" maxlength="4" pattern="^[1-9][0-9]{3}$"></td>
+        <td><input type="text" formControlName="title"         placeholder="原題"     required                                                      ></td>
+        <td><input type="text" formControlName="japaneseTitle" placeholder="邦題"                                                                   ></td>
+        <td><input type="text" formControlName="scenario"      placeholder="あらすじ"                                                               ></td>
+        <td><input type="text" formControlName="review"        placeholder="感想"                                                                   ></td>
+        <td><button type="button" (click)="onCreate()" [disabled]="filmsForm.controls.newFilm.invalid || isSubmitting">登録</button></td>
+      </tr>
     </tbody>
   </table>
-</div>
+</form>

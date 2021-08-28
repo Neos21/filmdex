@@ -4,7 +4,6 @@ import { SharedModule } from '../shared/shared.module';
 
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
-import { FilmsTableRowComponent } from './home/components/films-table-row/films-table-row.component';
 
 /** Pages Module */
 @NgModule({
@@ -13,8 +12,7 @@ import { FilmsTableRowComponent } from './home/components/films-table-row/films-
   ],
   declarations: [
     LoginComponent,
-    HomeComponent,
-    FilmsTableRowComponent
+    HomeComponent
   ]
 })
 export class PagesModule { }

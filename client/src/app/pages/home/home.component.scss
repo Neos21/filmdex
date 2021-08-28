@@ -1,12 +1,95 @@
-p.error-message {
-  margin-top: 0;
+p {
+  margin: 0 0 1rem;
 }
 
 .films-table-wrapper {
   overflow-x: auto;
+  margin: 0;
   
   // 配下は子コンポーネント側で管理する
-  table.films-table {
-    margin: 0 auto;
+  .films-table {
+    width: 100%;
+    margin: 0;
+    
+    thead {
+      .column-published-year {
+        width: 5%;
+        min-width: 5rem;
+      }
+      
+      .column-title,
+      .column-japanese-title {
+        width: 15%;
+        min-width: 15rem;
+      }
+      .column-scenario,
+      .column-review {
+        width: 30%;
+        min-width: 15rem;
+      }
+      
+      .column-operation {
+        width: 5%;
+        min-width: 4rem;
+      }
+    }
+    
+    td {
+      padding: 0;
+      text-align: center;
+      line-height: 1;  // 余白を消すために指定する
+      vertical-align: middle;
+    }
   }
+}
+
+input[type="text"] {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  padding: 1px .3rem;
+  color: var(--nn-colour-black);
+  
+  &::placeholder {
+    color: var(--nn-colour-grey-600);
+  }
+  
+  // 通常時の罫線色は td の --nn-colour-grey-400
+  &:hover {
+    outline: 1px solid var(--nn-colour-grey-900);
+  }
+  
+  // フォーカス時は青色
+  &:focus {
+    position: relative;
+    color: var(--nn-colour-black) !important;
+    outline: 1px solid var(--nn-colour-blue) !important;
+  }
+  
+  // バリデーションエラー時は赤色
+  &.ng-invalid.ng-dirty,
+  &.ng-invalid.ng-touched {
+    position: relative;  // 隣接セルの outline と重なり順を優先させる
+    color: var(--nn-colour-red);
+    outline: 1px solid var(--nn-colour-red) !important;
+  }
+  
+  // バリデーション OK 時は緑色
+  &.ng-valid.ng-dirty {
+    outline: 1px solid var(--nn-colour-green);
+  }
+  
+  // 更新フォームはカーソルがイチイチ変わらないようにする
+  .films-row > td > & {
+    cursor: default;
+    
+    &:focus {
+      cursor: text;
+    }
+  }
+}
+
+button {
+  padding: 0 .5rem;
 }

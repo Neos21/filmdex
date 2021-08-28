@@ -11,7 +11,12 @@ export class FilmsService {
   
   /** 映画情報を全件取得する */
   public async findAll(): Promise<Array<Film>> {
-    return await this.filmsRepository.find();
+    return await this.filmsRepository.find({
+      order: {
+        publishedYear: 'ASC',
+        title: 'ASC'
+      }
+    });
   }
   
   /** 映画情報を登録・更新する */
