@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Film } from './entities/film';
+import { Cast } from './entities/cast';
+import { Staff } from './entities/staff';
+import { Tag } from './entities/tag';
 
 import { AuthModule } from './auth/auth.module';
 import { FilmsModule } from './films/films.module';
@@ -16,7 +19,10 @@ import { AppController } from './app.controller';
       type: 'sqlite',
       database: './example.sqlite3.db',  // server/ 直下からのパス
       entities: [
-        Film
+        Film,
+        Cast,
+        Staff,
+        Tag
       ],
       synchronize: true
     }),

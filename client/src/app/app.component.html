@@ -1,6 +1,6 @@
 <header class="header">
   <h1>FilmDeX</h1>
-  <div><button type="button" *ngIf="isLogined()" (click)="onLogout()">Logout</button></div>
+  <div><button type="button" *ngIf="isLogined()" (click)="onLogout()" tabindex="-1">Logout</button></div>
 </header>
 <main class="main">
   <router-outlet></router-outlet>

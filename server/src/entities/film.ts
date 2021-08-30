@@ -26,7 +26,7 @@ export class Film {
   /** 感想 */
   @Column({ type: 'text', name: 'review', nullable: true })
   public review: string;
-    
+  
   /** 新規登録日時 */
   @CreateDateColumn({ type: 'datetime', name: 'created_at' })
   public readonly createdAt: Date;
@@ -35,7 +35,7 @@ export class Film {
   @UpdateDateColumn({ type: 'datetime', name: 'updated_at' })
   public readonly updatedAt: Date;
   
-  constructor(initialFilmPartial: Partial<Film>) {
-    Object.assign(this, initialFilmPartial);
+  constructor(initialPartial: Partial<Film>) {
+    Object.assign(this, initialPartial);
   }
 }

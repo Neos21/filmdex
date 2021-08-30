@@ -1,0 +1,60 @@
+.controllers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 0 1rem;
+  
+  :last-child {
+    text-align: right;
+  }
+  
+  button {
+    margin-left: 1rem;
+  }
+}
+
+form {
+  margin: 0;
+}
+
+table {
+  caption {
+    text-align: left;
+  }
+  
+  .column-order {
+    min-width: 3rem;
+    width: 1%;
+    max-width: 3rem;
+    
+    input[type="text"] {
+      text-align: right;
+      cursor: default;
+      pointer-events: none;
+    }
+  }
+  
+  .column-role {
+    min-width: 10rem;
+    width: 20%;
+  }
+  
+  .column-name {
+    min-width: 15rem;
+    width: 80%;
+  }
+  
+  .column-operation {
+    min-width: 7rem;
+    width: 1%;
+    max-width: 7rem;
+    
+    .operation-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    
+    button {
+      width: 100%;
+    }
+  }
+}

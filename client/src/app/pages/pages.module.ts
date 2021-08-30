@@ -4,6 +4,7 @@ import { SharedModule } from '../shared/shared.module';
 
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
+import { FilmMetaComponent } from './home/component/film-meta/film-meta.component';
 
 /** Pages Module */
 @NgModule({
@@ -12,7 +13,8 @@ import { HomeComponent } from './home/home.component';
   ],
   declarations: [
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    FilmMetaComponent
   ]
 })
 export class PagesModule { }

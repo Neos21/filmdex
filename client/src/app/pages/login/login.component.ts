@@ -32,7 +32,6 @@ export class LoginComponent implements OnInit {
     this.errorMessage = '';
     try {
       await this.authGuard.login(this.loginForm.value.userName, this.loginForm.value.password);
-      console.log('Login Component : On Login');
       this.router.navigate(['/home']);
     }
     catch(error) {

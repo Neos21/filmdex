@@ -1,0 +1,122 @@
+<div class="controllers">
+  <div>
+    <div [hidden]="!isLoading"                                                       class="info-message"   >読込中…              </div>
+    <div [hidden]="isLoading || isSubmitting || errorMessage || isConfirmedToClose"  class="text-bold"      >Film Meta             </div>
+    <div [hidden]="isLoading || isSubmitting || errorMessage || !isConfirmedToClose" class="warning-message">Are You Sure To Close?</div>
+    <div [hidden]="isLoading || !isSubmitting"                                       class="info-message"   >更新中…              </div>
+    <div [hidden]="isLoading || !errorMessage"                                       class="error-message"  >{{ errorMessage }}    </div>
+  </div>
+  <div>
+    <button type="button" class="small-button" (click)="isConfirmedToClose = false" [disabled]="isLoading || isSubmitting" *ngIf="isConfirmedToClose">Cancel</button>
+    <button type="button" class="small-button" (click)="onClose()"        [disabled]="isLoading || isSubmitting">{{ isConfirmedToClose ? 'Yes Close!' : 'Close' }}</button>
+  </div>
+</div>
+
+<form [formGroup]="filmMetaForm" *ngIf="!isLoading">
+  <div class="table-wrapper">
+    <table class="form-table">
+      <caption>キャスト</caption>
+      <thead>
+        <tr>
+          <th class="column-order"    >No</th>
+          <th class="column-role"     >役名</th>
+          <th class="column-name"     >名前</th>
+          <th class="column-operation">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container formArrayName="casts">
+          <tr *ngFor="let cast of casts.controls; let i = index; let l = count" [formGroupName]="i" class="edit-row">
+            <td class="column-order"    ><input type="text" formControlName="order" placeholder="順序" required readonly tabindex="-1"></td>
+            <td class="column-role"     ><input type="text" formControlName="role"  placeholder="役名" required></td>
+            <td class="column-name"     ><input type="text" formControlName="name"  placeholder="名前" required></td>
+            <td class="column-operation">
+              <div class="operation-buttons">
+                <button type="button" [disabled]="isSubmitting || i === 0"     (click)="onUpCast(i)"    >↑</button>
+                <button type="button" [disabled]="isSubmitting || i === l - 1" (click)="onDownCast(i)"  >↓</button>
+                <button type="button" [disabled]="isSubmitting"                (click)="onRemoveCast(i)">×</button>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr formGroupName="newCast">
+          <td class="column-order"    >-</td>
+          <td class="column-role"     ><input type="text" formControlName="role" placeholder="役名" required></td>
+          <td class="column-name"     ><input type="text" formControlName="name" placeholder="名前" required></td>
+          <td class="column-operation"><button type="button" [disabled]="filmMetaForm.controls.newCast.invalid || isSubmitting" (click)="onAddNewCast()">追加</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="table-wrapper">
+    <table class="form-table">
+      <caption>スタッフ</caption>
+      <thead>
+        <tr>
+          <th class="column-order"    >No</th>
+          <th class="column-role"     >役職名</th>
+          <th class="column-name"     >名前</th>
+          <th class="column-operation">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container formArrayName="staffs">
+          <tr *ngFor="let staff of staffs.controls; let i = index; let l = count" [formGroupName]="i" class="edit-row">
+            <td class="column-order"    ><input type="text" formControlName="order" placeholder="順序"   required readonly tabindex="-1"></td>
+            <td class="column-role"     ><input type="text" formControlName="role"  placeholder="役職名" required></td>
+            <td class="column-name"     ><input type="text" formControlName="name"  placeholder="名前"   required></td>
+            <td class="column-operation">
+              <div class="operation-buttons">
+                <button type="button" [disabled]="isSubmitting || i === 0"     (click)="onUpStaff(i)"    >↑</button>
+                <button type="button" [disabled]="isSubmitting || i === l - 1" (click)="onDownStaff(i)"  >↓</button>
+                <button type="button" [disabled]="isSubmitting"                (click)="onRemoveStaff(i)">×</button>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr formGroupName="newStaff">
+          <td class="column-order"    >-</td>
+          <td class="column-role"     ><input type="text" formControlName="role" placeholder="役職名" required></td>
+          <td class="column-name"     ><input type="text" formControlName="name" placeholder="名前"   required></td>
+          <td class="column-operation"><button type="button" [disabled]="filmMetaForm.controls.newStaff.invalid || isSubmitting" (click)="onAddNewStaff()">追加</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="table-wrapper">
+    <table class="form-table">
+      <caption>タグ</caption>
+      <thead>
+        <tr>
+          <th class="column-order"    >No</th>
+          <th class="column-name"     >タグ名</th>
+          <th class="column-operation">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container formArrayName="tags">
+          <tr *ngFor="let tag of tags.controls; let i = index; let l = count" [formGroupName]="i" class="edit-row">
+            <td class="column-order"    ><input type="text" formControlName="order" placeholder="順序"   required readonly tabindex="-1"></td>
+            <td class="column-name"     ><input type="text" formControlName="name"  placeholder="タグ名" required></td>
+            <td class="column-operation">
+              <div class="operation-buttons">
+                <button type="button" [disabled]="isSubmitting || i === 0"     (click)="onUpTag(i)"    >↑</button>
+                <button type="button" [disabled]="isSubmitting || i === l - 1" (click)="onDownTag(i)"  >↓</button>
+                <button type="button" [disabled]="isSubmitting"                (click)="onRemoveTag(i)">×</button>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr formGroupName="newTag">
+          <td class="column-order"    >-</td>
+          <td class="column-name"     ><input type="text" formControlName="name" placeholder="タグ名" required></td>
+          <td class="column-operation"><button type="button" [disabled]="filmMetaForm.controls.newTag.invalid || isSubmitting" (click)="onAddNewTag()">追加</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="text-right"><button type="button" (click)="onUpdate()" [disabled]="isDisabledUpdateButton() || isSubmitting">更新</button></div>
+</form>

@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Film } from '../entities/film';
+import { Cast } from '../entities/cast';
+import { Staff } from '../entities/staff';
+import { Tag } from '../entities/tag';
 
 import { FilmsService } from './films.service';
 import { FilmsController } from './films.controller';
@@ -10,7 +13,10 @@ import { FilmsController } from './films.controller';
   imports: [
     // 配下の Service などで Repository を使えるようにする
     TypeOrmModule.forFeature([
-      Film
+      Film,
+      Cast,
+      Staff,
+      Tag
     ])
   ],
   providers: [

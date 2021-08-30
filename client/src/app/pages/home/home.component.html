@@ -1,9 +1,10 @@
 <p [hidden]="!isLoading"                                class="info-message" >読込中…          </p>
-<p [hidden]="isLoading || isSubmitting || errorMessage" class="text-right"   ><button type="button" (click)="onLoad()">Reload</button></p>
+<p [hidden]="isLoading || isSubmitting || errorMessage" class="text-right"   ><button type="button" class="small-button" (click)="onLoad()" [disabled]="editingFilmId">Reload</button></p>
 <p [hidden]="isLoading || !isSubmitting"                class="info-message" >更新中…          </p>
 <p [hidden]="isLoading || !errorMessage"                class="error-message">{{ errorMessage }}</p>
-<form [formGroup]="filmsForm" class="films-table-wrapper" *ngIf="!isLoading">
-  <table class="films-table">
+
+<form [formGroup]="filmsForm" class="table-wrapper" *ngIf="!isLoading">
+  <table class="form-table" [hidden]="editingFilmId != null">  <!-- モーダル表示時は表を操作させないように非表示にする -->
     <thead>
       <tr>
         <th class="column-published-year">公開年</th>
@@ -16,23 +17,32 @@
     </thead>
     <tbody>
       <ng-container formArrayName="films">
-        <tr *ngFor="let film of films.controls; let i = index" [formGroupName]="i" class="films-row">
-          <td><input type="text" formControlName="publishedYear" placeholder="公開年"   (blur)="onUpdate(film)" required minlength="4" maxlength="4" pattern="^[1-9][0-9]{3}$"></td>
-          <td><input type="text" formControlName="title"         placeholder="原題"     (blur)="onUpdate(film)" required                                                      ></td>
-          <td><input type="text" formControlName="japaneseTitle" placeholder="邦題"     (blur)="onUpdate(film)"                                                               ></td>
-          <td><input type="text" formControlName="scenario"      placeholder="あらすじ" (blur)="onUpdate(film)"                                                               ></td>
-          <td><input type="text" formControlName="review"        placeholder="感想"     (blur)="onUpdate(film)"                                                               ></td>
-          <td><button type="button" (click)="onUpdate(film)" [disabled]="film.pristine || film.invalid || isSubmitting">更新</button></td>
+        <tr *ngFor="let film of films.controls; let i = index" [formGroupName]="i" class="edit-row">
+          <td class="column-published-year"><input type="text" formControlName="publishedYear" placeholder="公開年"   (blur)="onUpdate(film)" required minlength="4" maxlength="4" pattern="^[1-9][0-9]{3}$"></td>
+          <td class="column-title"         ><input type="text" formControlName="title"         placeholder="原題"     (blur)="onUpdate(film)" required                                                      ></td>
+          <td class="column-japanese-title"><input type="text" formControlName="japaneseTitle" placeholder="邦題"     (blur)="onUpdate(film)"                                                               ></td>
+          <td class="column-scenario"      ><input type="text" formControlName="scenario"      placeholder="あらすじ" (blur)="onUpdate(film)"                                                               ></td>
+          <td class="column-review"        ><input type="text" formControlName="review"        placeholder="感想"     (blur)="onUpdate(film)"                                                               ></td>
+          <td class="column-operation"     >
+            <button type="button" title="詳細" class="button-meta"   (click)="onStartEditMeta(film)" [disabled]="isSubmitting || editingFilmId != null"        >→</button>
+            <button type="button" title="更新" class="button-update" (click)="onUpdate(film)"        [disabled]="film.pristine || film.invalid || isSubmitting">○</button>
+          </td>
         </tr>
       </ng-container>
-      <tr formGroupName="newFilm" class="new-film-row">
-        <td><input type="text" formControlName="publishedYear" placeholder="公開年"   required minlength="4" maxlength="4" pattern="^[1-9][0-9]{3}$"></td>
-        <td><input type="text" formControlName="title"         placeholder="原題"     required                                                      ></td>
-        <td><input type="text" formControlName="japaneseTitle" placeholder="邦題"                                                                   ></td>
-        <td><input type="text" formControlName="scenario"      placeholder="あらすじ"                                                               ></td>
-        <td><input type="text" formControlName="review"        placeholder="感想"                                                                   ></td>
-        <td><button type="button" (click)="onCreate()" [disabled]="filmsForm.controls.newFilm.invalid || isSubmitting">登録</button></td>
+      <tr formGroupName="newFilm">
+        <td class="column-published-year"><input type="text" formControlName="publishedYear" placeholder="公開年"   required minlength="4" maxlength="4" pattern="^[1-9][0-9]{3}$"></td>
+        <td class="column-title"         ><input type="text" formControlName="title"         placeholder="原題"     required                                                      ></td>
+        <td class="column-japanese-title"><input type="text" formControlName="japaneseTitle" placeholder="邦題"                                                                   ></td>
+        <td class="column-scenario"      ><input type="text" formControlName="scenario"      placeholder="あらすじ"                                                               ></td>
+        <td class="column-review"        ><input type="text" formControlName="review"        placeholder="感想"                                                                   ></td>
+        <td class="column-operation"     ><button type="button" title="登録" class="button-create" (click)="onCreate()" [disabled]="filmsForm.controls.newFilm.invalid || isSubmitting">登録</button></td>
       </tr>
     </tbody>
   </table>
 </form>
+
+<div class="modal-wrapper" *ngIf="editingFilmId != null">
+  <div class="modal-container">
+    <app-film-meta [filmId]="editingFilmId" (onClosed)="onEndEditMeta()"></app-film-meta>
+  </div>
+</div>

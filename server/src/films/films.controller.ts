@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Put, Request, UseGuards } from '@ne
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 import { Film } from '../entities/film';
+import { FilmMeta } from '../entities/film-meta';
 
 import { FilmsService } from './films.service';
 
@@ -27,7 +28,21 @@ export class FilmsController {
   /** 映画情報を更新する */
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  public async save(@Body() film: Film): Promise<any> {
+  public async save(@Body() film: Film): Promise<Film> {
     return this.filmsService.save(film);
+  }
+  
+  /** 映画メタ情報を取得する */
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/meta')
+  public async findMeta(@Param('id') filmId: number): Promise<FilmMeta> {
+    return this.filmsService.findMeta(filmId);
+  }
+  
+  /** 映画メタ情報を更新する */
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/meta')
+  public async saveMeta(@Body() filmMeta: FilmMeta): Promise<FilmMeta> {
+    return this.filmsService.saveMeta(filmMeta);
   }
 }

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Film } from '../../../../../server/src/entities/film';
 
 import { ApiFilmsService } from './services/api-films.service';
 
+/** 「ホーム」画面 */
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -19,6 +20,9 @@ export class HomeComponent implements OnInit {
   
   /** API 通信中か否か */
   public isSubmitting: boolean = false;
+  
+  /** メタ情報を編集中の ID・編集中でなければ null */
+  public editingFilmId: number | null = null;
   
   /** エラーメッセージ */
   public errorMessage: string = '';
@@ -36,12 +40,10 @@ export class HomeComponent implements OnInit {
     this.errorMessage = '';
     try {
       const films = await this.apiFilmsService.findAll();
-      console.log(films);
       this.filmsForm = this.formBuilder.group({
         films: this.formBuilder.array(films.map(film => this.createFormGroup(film))),
         newFilm: this.createFormGroup()
       });
-      console.log(this.filmsForm);
     }
     catch(error) {
       console.error('Home Component : On Init', error);
@@ -103,6 +105,18 @@ export class HomeComponent implements OnInit {
     finally {
       this.isSubmitting = false;
     }
+  }
+  
+  /** 「詳細」ボタン押下時 : メタ情報の編集開始 */
+  public onStartEditMeta(filmFormGroup: AbstractControl): void {
+    const filmId = filmFormGroup.value.id;
+    if(this.editingFilmId != null) return console.warn('Home Component : On Start Edit Meta : Aborted', { editingFilmId: this.editingFilmId, filmId: filmId });
+    this.editingFilmId = filmId;
+  }
+  
+  /** メタ情報の編集終了時 */
+  public onEndEditMeta(): void {
+    this.editingFilmId = null;
   }
   
   /** formArrayName 属性解決のための Getter */
