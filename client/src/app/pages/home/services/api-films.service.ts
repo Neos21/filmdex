@@ -16,6 +16,16 @@ export class ApiFilmsService {
     return await this.httpClient.get<Array<Film>>(`${environment.apiUrl}/films`).toPromise();
   }
   
+  /** 映画情報を検索する */
+  public async search(targetColumn: string, searchText: string): Promise<Array<Film>> {
+    return await this.httpClient.get<Array<Film>>(`${environment.apiUrl}/films`, {
+      params: {
+        target_column: targetColumn,
+        search_text  : searchText
+      }
+    }).toPromise();
+  }
+  
   /** 映画情報を登録する */
   public async create(film: Film): Promise<Film> {
     return await this.httpClient.post<Film>(`${environment.apiUrl}/films`, film).toPromise();

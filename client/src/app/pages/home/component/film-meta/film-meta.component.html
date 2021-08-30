@@ -7,8 +7,8 @@
     <div [hidden]="isLoading || !errorMessage"                                       class="error-message"  >{{ errorMessage }}    </div>
   </div>
   <div>
-    <button type="button" class="small-button" (click)="isConfirmedToClose = false" [disabled]="isLoading || isSubmitting" *ngIf="isConfirmedToClose">Cancel</button>
-    <button type="button" class="small-button" (click)="onClose()"        [disabled]="isLoading || isSubmitting">{{ isConfirmedToClose ? 'Yes Close!' : 'Close' }}</button>
+    <button type="button" class="small-button" [disabled]="isLoading || isSubmitting" (click)="isConfirmedToClose = false" *ngIf="isConfirmedToClose">Cancel</button>
+    <button type="button" class="small-button" [disabled]="isLoading || isSubmitting" (click)="onClose()">{{ isConfirmedToClose ? 'Yes Close!' : 'Close' }}</button>
   </div>
 </div>
 

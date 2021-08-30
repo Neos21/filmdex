@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Connection, FindManyOptions, Repository } from 'typeorm';
+import { Between, Connection, FindManyOptions, Like, Repository } from 'typeorm';
 
 import { Film } from '../entities/film';
 import { Cast } from '../entities/cast';
@@ -19,14 +19,44 @@ export class FilmsService {
     private connection: Connection
   ) { }
   
-  /** 映画情報を全件取得する */
-  public async findAll(): Promise<Array<Film>> {
-    return await this.filmsRepository.find({
+  /** 映画情報を取得する */
+  public async find(targetColumn?: string, searchText?: string): Promise<Array<Film>> {
+    const options: FindManyOptions<Film> = {
       order: {
         publishedYear: 'ASC',
         title: 'ASC'
       }
-    });
+    };
+    if(targetColumn && searchText) {  // 検索条件アリ
+      targetColumn = targetColumn.trim();
+      searchText   = searchText.trim();
+      
+      if(targetColumn === 'published_year') {  // 1年指定
+        options.where = { publishedYear: searchText }
+      }
+      else if(targetColumn === 'published_age') {  // 10年区切りの年代 (00～09 年)
+        const startYear = Number(searchText);
+        const endYear   = startYear + 9;
+        options.where = { publishedYear: Between(startYear, endYear) };
+      }
+      else if(targetColumn === 'title') {  // 原題・邦題両方を対象に部分一致
+        options.where = [
+          { title        : Like(`%${searchText}%`) },
+          { japaneseTitle: Like(`%${searchText}%`) }
+        ];
+      }
+      // TODO : 親子関係を作らないと検索できない
+      //else if(targetColumn === 'cast') {
+      //  options.where = { cast: searchText };
+      //}
+      //else if(targetColumn === 'staff') {
+      //  options.where = { staff: searchText };
+      //}
+      //else if(targetColumn === 'tag') {
+      //  options.where = { tag: searchText };
+      //}
+    }
+    return await this.filmsRepository.find(options);
   }
   
   /** 映画情報を登録・更新する */

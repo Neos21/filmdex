@@ -1,7 +1,25 @@
-<p [hidden]="!isLoading"                                class="info-message" >読込中…          </p>
-<p [hidden]="isLoading || isSubmitting || errorMessage" class="text-right"   ><button type="button" class="small-button" (click)="onLoad()" [disabled]="editingFilmId">Reload</button></p>
-<p [hidden]="isLoading || !isSubmitting"                class="info-message" >更新中…          </p>
-<p [hidden]="isLoading || !errorMessage"                class="error-message">{{ errorMessage }}</p>
+<div class="controllers">
+  <div [hidden]="editingFilmId != null">  <!-- モーダル表示時は操作させないように非表示にする -->
+    <div [hidden]="isLoading || isSubmitting || errorMessage">
+      <div class="controllers-container">  <!-- display: grid を指定しており [hidden] に勝ってしまうので入れ子にする -->
+        <form [formGroup]="searchForm" *ngIf="searchForm">
+          <select formControlName="targetColumn" (change)="onChangeSearchTargetColumn()">
+            <option *ngFor="let searchTargetColumn of searchTargetColumns" [ngValue]="searchTargetColumn.value">{{ searchTargetColumn.name }}</option>
+          </select>
+          <select formControlName="publishedAge" (change)="onChangeSearchPublishedAge()" *ngIf="searchForm.controls.targetColumn.value === 'published_age'">
+            <option *ngFor="let searchPublishedAge of searchPublishedAges" [ngValue]="searchPublishedAge.age">{{ searchPublishedAge.age }} 年代</option>
+          </select>
+          <input type="text" formControlName="searchText" placeholder="検索文字列" [hidden]="searchForm.controls.targetColumn.value === 'published_age'">
+          <button type="button" (click)="onSearch()" [disabled]="searchForm.invalid || isInvalidPublishedYear()">検索</button>
+        </form>
+        <div><button type="button" (click)="onLoad()">Reload</button></div>
+      </div>
+    </div>
+    <div [hidden]="!isLoading"                 class="info-message" >読込中…          </div>
+    <div [hidden]="isLoading || !isSubmitting" class="info-message" >更新中…          </div>
+    <div [hidden]="isLoading || !errorMessage" class="error-message">{{ errorMessage }}</div>  <!-- TODO : 検索フォームは出しっぱなしにしたい -->
+  </div>
+</div>
 
 <form [formGroup]="filmsForm" class="table-wrapper" *ngIf="!isLoading">
   <table class="form-table" [hidden]="editingFilmId != null">  <!-- モーダル表示時は表を操作させないように非表示にする -->

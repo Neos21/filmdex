@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 import { Film } from '../entities/film';
@@ -11,11 +11,11 @@ import { FilmsService } from './films.service';
 export class FilmsController {
   constructor(private filmsService: FilmsService) { }
   
-  /** 映画情報を全件取得する */
+  /** 映画情報を取得する */
   @UseGuards(JwtAuthGuard)
   @Get()
-  public async findAll(): Promise<Array<Film>> {
-    return await this.filmsService.findAll();
+  public async find(@Query('target_column') targetColumn: string, @Query('search_text') searchText: string): Promise<Array<Film>> {
+    return await this.filmsService.find(targetColumn, searchText);
   }
   
   /** 映画情報を登録する */

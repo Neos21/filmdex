@@ -15,6 +15,22 @@ export class HomeComponent implements OnInit {
   /** 映画情報フォーム */
   public filmsForm: FormGroup;
   
+  /** 検索フォーム */
+  public searchForm: FormGroup;
+  
+  /** 検索対象カラム定義 */
+  public searchTargetColumns: Array<{ name: string; value: string; }> = [
+    { name: '公開年'  , value: 'published_year' },  // 1年指定
+    { name: '公開年代', value: 'published_age'  },  // 10年区切りの年代 (00～09 年)
+    { name: 'タイトル', value: 'title'          },  // 原題・邦題両方を対象に部分一致
+    { name: 'キャスト', value: 'cast'           },  // キャスト名の完全一致
+    { name: 'スタッフ', value: 'staff'          },  // スタッフ名の完全一致
+    { name: 'タグ'    , value: 'tag'            },  // タグ名の完全一致
+  ];
+  
+  /** 公開年代定義 */
+  public searchPublishedAges: Array<{ age: number; }> = this.createSearchPublishedAges();
+  
   /** 初回読込中か否か */
   public isLoading: boolean = true;
   
@@ -34,7 +50,7 @@ export class HomeComponent implements OnInit {
     await this.onLoad();
   }
   
-  /** 「Reload」ボタン押下時 : 映画情報を読み込む */
+  /** 初期表示時および「Reload」ボタン押下時 : 映画情報を読み込む */
   public async onLoad(): Promise<void> {
     this.isLoading = true;
     this.errorMessage = '';
@@ -44,10 +60,63 @@ export class HomeComponent implements OnInit {
         films: this.formBuilder.array(films.map(film => this.createFormGroup(film))),
         newFilm: this.createFormGroup()
       });
+      
+      this.searchForm = this.formBuilder.group({
+        targetColumn: ['title', [Validators.required]],
+        searchText  : [''     , [Validators.required]],
+        publishedAge: ['']  // select 要素のデフォルト選択を管理するためのモノ・値は searchText に同期して管理する
+      });
     }
     catch(error) {
       console.error('Home Component : On Init', error);
       this.errorMessage = 'Failed To Fetch Films';
+    }
+    finally {
+      this.isLoading = false;
+    }
+  }
+  
+  /** 「検索条件」セレクトボックス変更時 */
+  public onChangeSearchTargetColumn(): void {
+    // 「公開年代」以外に変更した場合は検索文字列を空にする
+    if(this.searchForm.value.targetColumn !== 'published_age') {
+      this.searchForm.controls.searchText.reset();
+      return;
+    }
+    
+    // 「公開年代」を選択した場合は初期値を現在年代にする
+    const currentAge = this.searchPublishedAges[this.searchPublishedAges.length - 2].age;
+    this.searchForm.controls.searchText.setValue(currentAge);
+    this.searchForm.controls.publishedAge.setValue(currentAge);
+  }
+  
+  /** 「公開年代」セレクトボックス変更時 : 「検索文字列」に値を同期する */
+  public onChangeSearchPublishedAge(): void {
+    this.searchForm.controls.searchText.setValue(this.searchForm.value.publishedAge);
+  }
+  
+  /** 「検索条件」で「公開年」を選択している場合は「検索文字列」が整数4桁でないと「検索」ボタンを押下できないようにする */
+  public isInvalidPublishedYear(): boolean {
+    if(this.searchForm.value.targetColumn !== 'published_year') return false;
+    return !(/^\d{4}$/u).test(this.searchForm.value.searchText);
+  }
+  
+  /** 「検索」ボタン押下時 */
+  public async onSearch(): Promise<void> {
+    this.isLoading = true;
+    this.errorMessage = '';
+    try {
+      const targetColumn = this.searchForm.value.targetColumn;
+      const searchText   = this.searchForm.value.searchText;
+      const films = await this.apiFilmsService.search(targetColumn, searchText);
+      this.filmsForm = this.formBuilder.group({
+        films: this.formBuilder.array(films.map(film => this.createFormGroup(film))),
+        newFilm: this.createFormGroup()
+      });
+    }
+    catch(error) {
+      console.error('Home Component : On Search', error);
+      this.errorMessage = 'Failed To Search Films';
     }
     finally {
       this.isLoading = false;
@@ -139,5 +208,24 @@ export class HomeComponent implements OnInit {
       scenario     : [film?.scenario      ?? ''],
       review       : [film?.review        ?? '']  // createdAt・updatedAt は Form で扱わなくても正しく管理される
     });
+  }
+  
+  /**
+   * 1890・1990 … 2020・2030 といった年代の配列を作る
+   * 
+   * @return 年代の配列 (現在年を含む年代の、次の10年代までを含める)
+   */
+  private createSearchPublishedAges(): Array<{ age: number; }> {
+    const startAge = 1890;  // 世界初の映画は 1895 年とされているので 1890 を開始年代にする
+    const nowAge = Number(`${new Date().getFullYear()}`.substr(0, 3) + '0');  // 現在年から 2020 のような年代の値を作る
+    const nextAge = nowAge + 10;  // 次の10年代
+    const ages = [];
+    
+    let currentAge = startAge;
+    while(currentAge <= nextAge) {
+      ages.push({ age: currentAge });
+      currentAge += 10;
+    }
+    return ages;
   }
 }

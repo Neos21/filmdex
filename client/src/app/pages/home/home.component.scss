@@ -1,3 +1,44 @@
+.controllers {
+  min-height: 4rem;  // フォームと文字列どちらが表示されても高さをズラさないようにする・margin-bottom は付けないがイイカンジにスペースが開いている
+  
+  .controllers-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 1rem;
+    
+    :first-child {
+      overflow-x: auto;
+    }
+    
+    form {
+      margin: 0;
+      white-space: nowrap;
+      
+      & > *:not(:last-child) {
+        margin-right: .5rem;
+      }
+      
+      select {
+        border: 1px solid var(--nn-colour-grey-400);
+        border-radius: var(--nn-border-radius-default);
+        padding: calc(var(--nn-space-tiny) / var(--nn-ratio-2)) var(--nn-space-tiny);
+        background: transparent;
+        cursor: pointer;
+      }
+      
+      input[type="text"] {
+        min-width: 15rem;
+        
+        // バリデーションエラー時
+        &.ng-invalid.ng-dirty,
+        &.ng-invalid.ng-touched {
+          border-color: var(--nn-colour-red);
+        }
+      }
+    }
+  }
+}
+
 table {
   .column-published-year,
   .column-operation {
