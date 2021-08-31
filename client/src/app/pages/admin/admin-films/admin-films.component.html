@@ -1,0 +1,73 @@
+<!-- モーダル表示時は操作させないように非表示にする・*ngIf だとフォーム部品が初期化されてしまうので [hidden] を使う -->
+<app-search-form [hidden]="currentState === 'modal'" [isDisabled]="isDisabled()" (onSubmit)="onSearch($event)"></app-search-form>
+
+<p class="text-info"   *ngIf="currentState === 'loading'"  >読込中…</p>
+<p class="text-info"   *ngIf="currentState === 'searching'">検索中…</p>
+<p class="text-info"   *ngIf="currentState === 'creating'" >登録中…</p>
+<p class="text-info"   *ngIf="currentState === 'updating'" >更新中…</p>
+<p class="text-bold"   *ngIf="currentState === '' || currentState === 'loaded' || currentState === 'searched'">Admin : Films</p>
+<p class="text-danger" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+<form class="table-wrapper" *ngIf="filmsForm" [formGroup]="filmsForm">
+  <!-- モーダル表示時は操作させないように非表示にする -->
+  <table class="form-table" *ngIf="currentState !== 'modal'">
+    <thead>
+      <tr>
+        <th class="column-published-year">公開年</th>
+        <th class="column-title"         >原題</th>
+        <th class="column-japanese-title">邦題</th>
+        <th class="column-scenario"      >あらすじ</th>
+        <th class="column-review"        >感想</th>
+        <th class="column-operation"     >操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container formArrayName="films" *ngIf="films.controls.length > 0; else notFound">
+        <tr class="edit-row" *ngFor="let film of films.controls; let i = index" [formGroupName]="i">
+          <td class="column-published-year"><input type="text" placeholder="公開年"   formControlName="publishedYear" (blur)="onUpdate(film)" required minlength="4" maxlength="4" pattern="^[1-9][0-9]{3}$"></td>
+          <td class="column-title"         ><input type="text" placeholder="原題"     formControlName="title"         (blur)="onUpdate(film)" required                                                      ></td>
+          <td class="column-japanese-title"><input type="text" placeholder="邦題"     formControlName="japaneseTitle" (blur)="onUpdate(film)"                                                               ></td>
+          <td class="column-scenario"      ><input type="text" placeholder="あらすじ" formControlName="scenario"      (blur)="onUpdate(film)"                                                               ></td>
+          <td class="column-review"        ><input type="text" placeholder="感想"     formControlName="review"        (blur)="onUpdate(film)"                                                               ></td>
+          <td class="column-operation"     >
+            <div class="grid-3-columns">
+              <button type="button" title="詳細" [disabled]="isDisabled()"                                  (click)="onStartEditMeta(film)">→</button>
+              <button type="button" title="更新" [disabled]="isDisabled() || film.pristine || film.invalid" (click)="onUpdate(film)"       >○</button>
+              <button type="button" title="削除" [disabled]="isDisabled()"                                  (click)="onStartRemove(film)"  >×</button>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      
+      <ng-template #notFound>
+        <tr>
+          <td colspan="6" class="text-warning not-found">
+            <ng-container *ngIf="currentState === 'loading'   || currentState === 'loaded'"  >1件も映画が登録されていません</ng-container>
+            <ng-container *ngIf="currentState === 'searching' || currentState === 'searched'">条件に合致する映画はありません</ng-container>
+          </td>
+        </tr>
+      </ng-template>
+      
+      <tr formGroupName="newFilm">
+        <td class="column-published-year"><input type="text" placeholder="公開年"   formControlName="publishedYear" required minlength="4" maxlength="4" pattern="^[1-9][0-9]{3}$"></td>
+        <td class="column-title"         ><input type="text" placeholder="原題"     formControlName="title"         required                                                      ></td>
+        <td class="column-japanese-title"><input type="text" placeholder="邦題"     formControlName="japaneseTitle"                                                               ></td>
+        <td class="column-scenario"      ><input type="text" placeholder="あらすじ" formControlName="scenario"                                                                    ></td>
+        <td class="column-review"        ><input type="text" placeholder="感想"     formControlName="review"                                                                      ></td>
+        <td class="column-operation"     ><button type="button" [disabled]="isDisabled() || filmsForm.controls.newFilm.invalid" (click)="onCreate()">登録</button></td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+<div class="modal-wrapper" *ngIf="editingFilm != null">
+  <div class="modal-container">
+    <app-film-meta [film]="editingFilm" (onClosed)="onEndEditMeta()"></app-film-meta>
+  </div>
+</div>
+
+<div class="modal-wrapper" *ngIf="removingFilm != null">
+  <div class="modal-container">
+    <app-film-remove [film]="removingFilm" (onClosed)="onEndRemove($event)"></app-film-remove>
+  </div>
+</div>

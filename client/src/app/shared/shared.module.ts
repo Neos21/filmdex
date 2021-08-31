@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { PublicApiFilmsService } from './services/public-api-films.service';
+import { SearchFormComponent } from './components/search-form/search-form.component';
+
 /** Shared Module */
 @NgModule({
   imports: [
@@ -11,12 +14,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     HttpClientModule
   ],
+  providers: [
+    PublicApiFilmsService
+  ],
+  declarations: [
+    SearchFormComponent
+  ],
   exports: [
-    // Re-Export
+    // Re-Export Modules
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    // Re-Export Components
+    SearchFormComponent
   ]
 })
 export class SharedModule { }

@@ -1,0 +1,33 @@
+form {
+  margin: 0;
+  white-space: nowrap;
+  
+  // フォーム部品を横並びにする
+  .inputs-container {
+    overflow-x: auto;  // 幅が狭い場合は横スクロールにする
+    
+    & > *:not(:last-child) {
+      margin-right: .5rem;
+    }
+    
+    // 「検索条件」「公開年代」セレクトボックス
+    select {
+      border: 1px solid var(--nn-colour-grey-400);
+      border-radius: var(--nn-border-radius-default);
+      padding: calc(var(--nn-space-tiny) / var(--nn-ratio-2)) var(--nn-space-tiny);
+      background: transparent;
+      cursor: pointer;
+    }
+    
+    // 「検索文字列」
+    input[type="text"] {
+      min-width: 15rem;
+      
+      // バリデーションエラー時
+      &.ng-invalid.ng-dirty,
+      &.ng-invalid.ng-touched {
+        border-color: var(--nn-colour-red);
+      }
+    }
+  }
+}

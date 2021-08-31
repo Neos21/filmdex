@@ -2,12 +2,12 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn,
 
 import { Film } from './film';
 
-/** タグ情報 (ジャンル・シリーズなど) */
+/** タグ情報 */
 @Entity('tags')
 export class Tag {
   /** 映画情報 ID */
   @PrimaryColumn({ type: 'integer', name: 'film_id' })
-  public readonly filmId: number;
+  public filmId: number;
   
   /** 並び順 */
   @PrimaryColumn({ type: 'integer', name: 'order' })

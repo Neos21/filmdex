@@ -2,19 +2,20 @@ import { NgModule } from '@angular/core';
 
 import { SharedModule } from '../shared/shared.module';
 
+import { AdminModule } from './admin/admin.module';
+
+import { FilmsComponent } from './films/films.component';
 import { LoginComponent } from './login/login.component';
-import { HomeComponent } from './home/home.component';
-import { FilmMetaComponent } from './home/component/film-meta/film-meta.component';
 
 /** Pages Module */
 @NgModule({
   imports: [
-    SharedModule
+    SharedModule,
+    AdminModule
   ],
   declarations: [
-    LoginComponent,
-    HomeComponent,
-    FilmMetaComponent
+    FilmsComponent,
+    LoginComponent
   ]
 })
 export class PagesModule { }

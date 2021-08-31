@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { AuthGuard } from './shared/auth.guard';
+import { AuthGuard } from './shared/guards/auth.guard';
 
 /** App Component */
 @Component({
@@ -11,12 +11,16 @@ import { AuthGuard } from './shared/auth.guard';
 export class AppComponent {
   constructor(private authGuard: AuthGuard) { }
   
-  /** ログインしているか否か */
+  /**
+   * ログインしているか否か
+   * 
+   * @return ログインしていれば true・ログインしていなければ false
+   */
   public isLogined(): boolean {
     return this.authGuard.isLogined;
   }
   
-  /** 「Logout」ボタン押下時 */
+  /** 「Logout」ボタン押下時 : ログアウトする */
   public onLogout(): void {
     return this.authGuard.logout(true);
   }

@@ -1,0 +1,69 @@
+p,
+form {
+  margin-top: 1rem;
+}
+
+table {
+  .column-published-year {
+    min-width: 4.5rem;
+    width: 1%;
+    max-width: 4.5rem;
+    
+    input[type="text"] {
+      text-align: center;
+    }
+  }
+  
+  .column-title {
+    min-width: 12rem;
+    width: 15%;
+  }
+  
+  .column-japanese-title {
+    min-width: 10rem;
+    width: 15%;
+  }
+  
+  .column-scenario,
+  .column-review {
+    min-width: 15rem;
+    width: 30%;
+  }
+  
+  .column-operation {
+    min-width: 7rem;
+    width: 1%;
+    max-width: 7rem;
+    
+    // 余白を作らないように上書きする
+    .grid-3-columns {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    button {
+      width: 100%;
+    }
+  }
+  
+  .not-found {
+    padding: 1rem .5rem;
+  }
+}
+
+.modal-wrapper {
+  position: fixed;  // 画面全体がスクロールしても固定する
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  background: rgba(0, 0, 0, .5);
+  
+  .modal-container {
+    overflow-y: auto;
+    height: 100%;
+    border-radius: 6px;
+    padding: 1rem;
+    background: var(--nn-colour-white);
+  }
+}

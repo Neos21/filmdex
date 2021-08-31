@@ -1,12 +1,11 @@
 @import '../node_modules/@neos21/neos-normalize/neos-normalize.css';
 
-input,
-button {
-  font-size: 16px;
-}
 
-button:disabled {
-  cursor: default;
+// Globals : Blocks
+// ====================================================================================================
+
+h2 {
+  margin-top: 0;
 }
 
 p,
@@ -15,43 +14,49 @@ table {
   margin: 0 0 1rem;
 }
 
+input,
+button {
+  font-size: 16px;
+}
+
+
+// Globals : Inlines
+// ====================================================================================================
+
+button:disabled {
+  cursor: default;
+}
+
+
+// Globals : Others
+// ====================================================================================================
+
 [hidden] {
-  display: none;
+  display: none !important;
 }
 
-.info-message {
-  color: var(--nn-colour-cyan);
-  font-weight: bold;
-}
 
-.warning-message {
-  color: var(--nn-colour-yellow);
-  font-weight: bold;
-}
+// Utilities
+// ====================================================================================================
 
-.error-message {
-  color: var(--nn-colour-red);
-  font-weight: bold;
-}
+.text-info    { color: var(--nn-colour-cyan)  ; font-weight: bold; }
+.text-warning { color: var(--nn-colour-yellow); font-weight: bold; }
+.text-danger  { color: var(--nn-colour-red)   ; font-weight: bold; }
 
-.text-right {
-  text-align: right;
-}
+.text-right { text-align: right; }
+.text-bold  { font-weight: bold; }
 
-.text-bold {
-  font-weight: bold;
-}
-
-div.table-wrapper,
-form.table-wrapper {
+// 横スクロールを出す
+.table-wrapper {  // div・form
   overflow-x: auto;
   margin: 0 0 1rem;
   
-  table.form-table {
+  table {
     margin: 0;
   }
 }
 
+// フォーム用テーブル
 table.form-table {
   width: 100%;
   
@@ -116,11 +121,22 @@ table.form-table {
     }
   }
   
+  // input[type="text"] と高さを合わせる
   button {
     padding: 0 .5rem;
   }
 }
 
-button.small-button {
-  padding: 0 .5rem;
+// 2列を両端揃えにする
+.grid-2-columns {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: space-between;
+}
+
+// 3列を両端揃えにする
+.grid-3-columns {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: space-between;
 }

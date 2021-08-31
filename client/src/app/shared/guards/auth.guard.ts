@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
-import { constants } from './constants';
+import { constants } from '../classes/constants';
 
 /** 画面遷移時に認証チェックする */
 @Injectable({ providedIn: 'root' })
@@ -38,10 +38,9 @@ export class AuthGuard implements CanActivate {
       const auth = { userName, password };
       const { accessToken } = await this.httpClient.post(`${environment.apiUrl}/auth/login`, { userName, password }).toPromise() as Record<string, string>;
       
-      window.localStorage.setItem(constants.localStorageKeyAuth, JSON.stringify(auth));
+      window.localStorage.setItem(constants.localStorageKeyAuth       , JSON.stringify(auth));
       window.localStorage.setItem(constants.localStorageKeyAccessToken, accessToken);
       this.isLogined = true;
-      console.log('Auth Guard : Login', auth);
     }
     catch(error) {
       console.error('Auth Guard : Login', error);
@@ -65,7 +64,7 @@ export class AuthGuard implements CanActivate {
     }
     catch(error) {
       // 自動再ログインができなければ明示的にログアウト状態にしログインページに遷移する
-      console.error('Auth Guard : Re Login : Failed, Redirect To Login Page', error);
+      console.warn('Auth Guard : Re Login : Failed, Redirect To Login Page', error);
       this.logout(true);
       return false;
     }
@@ -84,6 +83,5 @@ export class AuthGuard implements CanActivate {
     window.localStorage.removeItem(constants.localStorageKeyAccessToken);
     this.isLogined = false;
     if(needsNavigateToLoginPage) this.router.navigate(['/login']);
-    console.log('Auth Guard : Logout');
   }
 }

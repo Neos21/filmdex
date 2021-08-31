@@ -14,4 +14,4 @@
   <p><button type="submit" [disabled]="loginForm.invalid">Login</button></p>
 </form>
 
-<p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+<p class="text-danger" *ngIf="errorMessage">{{ errorMessage }}</p>

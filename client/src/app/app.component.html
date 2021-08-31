@@ -1,7 +1,11 @@
-<header class="header">
+<header class="header grid-2-columns">
   <h1>FilmDeX</h1>
-  <div><button type="button" *ngIf="isLogined()" (click)="onLogout()" tabindex="-1">Logout</button></div>
+  <div>  <!-- ボタンの高さを変えないようにする -->
+    <button type="button" tabindex="-1" *ngIf="!isLogined()" [routerLink]="['/login']">Login</button>
+    <button type="button" tabindex="-1" *ngIf="isLogined()"  (click)="onLogout()"     >Logout</button>
+  </div>
 </header>
+
 <main class="main">
   <router-outlet></router-outlet>
 </main>

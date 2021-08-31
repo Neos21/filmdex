@@ -1,15 +1,5 @@
-.controllers {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  margin: 0 0 1rem;
-  
-  & > :last-child {
-    text-align: right;
-  }
-  
-  button {
-    margin-left: 1rem;
-  }
+.cancel-button {
+  margin-right: 1rem;
 }
 
 form {
@@ -17,6 +7,8 @@ form {
 }
 
 dl {
+  margin-top: 1rem;
+  
   dt {
     margin: 0;
   }
@@ -37,6 +29,7 @@ table {
     width: 1%;
     max-width: 3rem;
     
+    // order : readonly にしてあるので操作させないようにする
     input[type="text"] {
       text-align: right;
       cursor: default;
@@ -59,13 +52,12 @@ table {
     width: 1%;
     max-width: 7rem;
     
-    .operation-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-    
     button {
       width: 100%;
     }
   }
+}
+
+.footer-controllers {
+  margin-top: var(--nn-space-default);
 }

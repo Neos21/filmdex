@@ -1,17 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AuthGuard } from './shared/auth.guard';
+import { FilmsComponent } from './pages/films/films.component';
 import { LoginComponent } from './pages/login/login.component';
-import { HomeComponent } from './pages/home/home.component';
 
 /** Routes */
 const routes: Routes = [
-  { path: 'login'   , component: LoginComponent },
-  { path: 'home'    , component: HomeComponent, canActivate: [AuthGuard] },
+  // Public な画面
+  { path: 'films', component: FilmsComponent },
+  { path: 'login', component: LoginComponent },
   
-  // 未指定時は `/home` へのリダイレクトにしておき AuthGuard によって必要に応じて `/login` に振り分けさせる
-  { path: '', pathMatch: 'full', redirectTo: '/home' }
+  // 配下に Routing Module を持つ画面はこのように定義しておかないと、その下のワイルドカードに負けてしまう
+  { path: 'admin', loadChildren: () => import('./pages/admin/admin.module').then(module => module.AdminModule) },
+  
+  { path: ''  , redirectTo: '/films', pathMatch: 'full' },  // ルート
+  { path: '**', redirectTo: '/films'                    }   // 404
 ];
 
 /** App Routing Module */

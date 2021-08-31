@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { AuthGuard } from '../../shared/auth.guard';
+import { AuthGuard } from '../../shared/guards/auth.guard';
 
-/** 「ログイン」画面 */
+/** 「Login」画面 */
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -12,7 +12,8 @@ import { AuthGuard } from '../../shared/auth.guard';
 })
 export class LoginComponent implements OnInit {
   /** ログインフォーム */
-  public loginForm!: FormGroup;
+  public loginForm: FormGroup;
+  
   /** エラーメッセージ */
   public errorMessage: string = '';
   
@@ -32,7 +33,7 @@ export class LoginComponent implements OnInit {
     this.errorMessage = '';
     try {
       await this.authGuard.login(this.loginForm.value.userName, this.loginForm.value.password);
-      this.router.navigate(['/home']);
+      this.router.navigate(['/admin/films']);
     }
     catch(error) {
       console.error('Login Component : On Login', error);
