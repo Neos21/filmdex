@@ -8,6 +8,9 @@ import { constants } from '../shared/constants';
 /** カスタム HttpClient インターセプタ */
 @Injectable({ providedIn: 'root' })
 export class CustomHttpInterceptor implements HttpInterceptor {
+  /** JWT アクセストークンのキャッシュ : null の場合は未キャッシュ */
+  private cachedAccessToken: string | null = null;
+  
   /**
    * HttpClient からの通信の度に以下の割り込み処理を行う
    * 
@@ -15,15 +18,15 @@ export class CustomHttpInterceptor implements HttpInterceptor {
    * @param next ハンドラ
    * @return HttpEvent の Observable
    */
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+  public intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // クッキーによるセッション管理を有効にする
     request = request.clone({ withCredentials: true });
     
     // JWT アクセストークンが取得できればリクエストヘッダに設定する
-    const accessToken = window.localStorage.getItem(constants.localStorageKeyAccessToken);
-    if(accessToken) {
+    if(this.cachedAccessToken == null) this.cachedAccessToken = window.localStorage.getItem(constants.localStorageKeyAccessToken);  // 値がない場合は null が返る
+    if(this.cachedAccessToken) {
       request = request.clone({
-        headers: request.headers.set('Authorization', `Bearer ${accessToken}`)
+        headers: request.headers.set('Authorization', `Bearer ${this.cachedAccessToken}`)
       });
     }
     

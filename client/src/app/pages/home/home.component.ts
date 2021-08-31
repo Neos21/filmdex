@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Film } from '../../../../../server/src/entities/film';
+import { searchTargetColumns } from '../../../../../server/src/classes/search-target-columns';
 
 import { ApiFilmsService } from './services/api-films.service';
 
@@ -18,15 +19,8 @@ export class HomeComponent implements OnInit {
   /** 検索フォーム */
   public searchForm: FormGroup;
   
-  /** 検索対象カラム定義 */  // TODO : サーバサイドと共有資産にする
-  public searchTargetColumns: Array<{ name: string; value: string; }> = [
-    { name: '公開年'  , value: 'published_year' },  // 1年指定
-    { name: '公開年代', value: 'published_age'  },  // 10年区切りの年代 (00～09 年)
-    { name: 'タイトル', value: 'title'          },  // 原題・邦題両方を対象に部分一致
-    { name: 'キャスト', value: 'cast'           },  // キャスト名の完全一致
-    { name: 'スタッフ', value: 'staff'          },  // スタッフ名の完全一致
-    { name: 'タグ'    , value: 'tag'            },  // タグ名の完全一致
-  ];
+  /** 検索対象カラム定義 */
+  public searchTargetColumns: Array<{ name: string; value: string; }> = Object.entries(searchTargetColumns).map((keyValuePair: [string, { name: string; }]) => ({ name: keyValuePair[1].name, value: keyValuePair[0] }));
   
   /** 公開年代定義 */
   public searchPublishedAges: Array<{ age: number; }> = this.createSearchPublishedAges();
@@ -63,18 +57,18 @@ export class HomeComponent implements OnInit {
   public async onLoad(): Promise<void> {
     this.isLoading = true;
     this.errorMessage = '';
+    this.isSearch = false;
     try {
-      this.isSearch = false;
-      const films = await this.apiFilmsService.findAll();
-      this.filmsForm = this.formBuilder.group({
-        films: this.formBuilder.array(films.map(film => this.createFormGroup(film))),
-        newFilm: this.createFormGroup()
-      });
-      
       this.searchForm = this.formBuilder.group({
         targetColumn: ['title', [Validators.required]],
         searchText  : [''],  // 空値の場合は全件検索とする
         publishedAge: ['']   // select 要素のデフォルト選択を管理するためのモノ・値は searchText に同期して管理する
+      });
+      
+      const films = await this.apiFilmsService.find();  // 全件取得
+      this.filmsForm = this.formBuilder.group({
+        films: this.formBuilder.array(films.map(film => this.createFormGroup(film))),
+        newFilm: this.createFormGroup()
       });
     }
     catch(error) {
@@ -118,11 +112,11 @@ export class HomeComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
     try {
-      const targetColumn = this.searchForm.value.targetColumn;
       const searchText   = this.forceTrim(this.searchForm.value.searchText);
+      this.isSearch      = searchText !== '';  // 「検索文字列」が空なら全件取得にする
+      const targetColumn = this.isSearch ? this.searchForm.value.targetColumn : null;
       
-      this.isSearch = searchText !== '';  // 「検索文字列」が空なら全件取得にする
-      const films = this.isSearch ? await this.apiFilmsService.search(targetColumn, searchText) : await this.apiFilmsService.findAll();
+      const films = await this.apiFilmsService.find(targetColumn, searchText);
       this.filmsForm = this.formBuilder.group({
         films: this.formBuilder.array(films.map(film => this.createFormGroup(film))),
         newFilm: this.createFormGroup()

@@ -1,9 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 import { Film } from '../entities/film';
-import { FilmMeta } from '../entities/film-meta';
 
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FilmsService } from './films.service';
 
 /** 映画ルーティング・コントローラ */
@@ -11,11 +10,18 @@ import { FilmsService } from './films.service';
 export class FilmsController {
   constructor(private filmsService: FilmsService) { }
   
-  /** 映画情報を取得する */
+  /** 映画情報 (メタ情報込み) を複数取得する */
   @UseGuards(JwtAuthGuard)
   @Get()
-  public async find(@Query('target_column') targetColumn: string, @Query('search_text') searchText: string): Promise<Array<Film>> {
+  public async find(@Query('target_column') targetColumn?: string, @Query('search_text') searchText?: string): Promise<Array<Film>> {
     return await this.filmsService.find(targetColumn, searchText);
+  }
+  
+  /** 映画情報1件 (メタ情報込み) を取得する */
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  public async findOne(@Param('id') filmId: number): Promise<Film> {
+    return this.filmsService.findOne(filmId);
   }
   
   /** 映画情報を登録する */
@@ -25,7 +31,7 @@ export class FilmsController {
     return this.filmsService.save(film);
   }
   
-  /** 映画情報を更新する */
+  /** 映画情報を更新する (メタ情報含めた更新も可能) */
   @UseGuards(JwtAuthGuard)
   @Put(':id')
   public async save(@Body() film: Film): Promise<Film> {
@@ -37,19 +43,5 @@ export class FilmsController {
   @Delete(':id')
   public async remove(@Param('id') filmId: number): Promise<boolean> {
     return this.filmsService.remove(filmId);
-  }
-  
-  /** 映画メタ情報を取得する */
-  @UseGuards(JwtAuthGuard)
-  @Get(':id/meta')
-  public async findMeta(@Param('id') filmId: number): Promise<FilmMeta> {
-    return this.filmsService.findMeta(filmId);
-  }
-  
-  /** 映画メタ情報を更新する */
-  @UseGuards(JwtAuthGuard)
-  @Put(':id/meta')
-  public async saveMeta(@Body() filmMeta: FilmMeta): Promise<FilmMeta> {
-    return this.filmsService.saveMeta(filmMeta);
   }
 }

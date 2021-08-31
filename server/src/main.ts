@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
 
+/** サーバ起動 */
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // CORS 設定

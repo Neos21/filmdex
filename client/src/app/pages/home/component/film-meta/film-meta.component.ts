@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Film } from '../../../../../../../server/src/entities/film';
-import { FilmMeta } from '../../../../../../../server/src/entities/film-meta';
 import { Cast } from '../../../../../../../server/src/entities/cast';
 import { Staff } from '../../../../../../../server/src/entities/staff';
 import { Tag } from '../../../../../../../server/src/entities/tag';
@@ -47,12 +46,14 @@ export class FilmMetaComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
     try {
-      const filmMeta = await this.apiFilmsService.findMeta(this.film.id);
+      const film = await this.apiFilmsService.findOne(this.film.id);
+      
+      this.film = film;  // API から取得した情報を正とする
       this.filmMetaForm = this.formBuilder.group({
-        filmId: [filmMeta.filmId, [Validators.required]],
-        casts : this.formBuilder.array(filmMeta.casts.map(cast => this.createCastFormGroup(cast))),
-        staffs: this.formBuilder.array(filmMeta.staffs.map(staff => this.createStaffFormGroup(staff))),
-        tags  : this.formBuilder.array(filmMeta.tags.map(tag => this.createTagFormGroup(tag))),
+        filmId: [film.id, [Validators.required]],
+        casts : this.formBuilder.array(film.casts.map(cast => this.createCastFormGroup(cast))),
+        staffs: this.formBuilder.array(film.staffs.map(staff => this.createStaffFormGroup(staff))),
+        tags  : this.formBuilder.array(film.tags.map(tag => this.createTagFormGroup(tag))),
         newCast : this.createCastFormGroup(),
         newStaff: this.createStaffFormGroup(),
         newTag  : this.createTagFormGroup()
@@ -86,18 +87,19 @@ export class FilmMetaComponent implements OnInit {
     this.errorMessage = '';
     this.isConfirmedToClose = false;
     try {
-      const casts : Array<Cast>  = this.casts.value;
-      const staffs: Array<Staff> = this.staffs.value;
-      const tags  : Array<Tag>   = this.tags.value;
-      const filmMeta = new FilmMeta(this.film.id, casts, staffs, tags);
-      const resultFilmMeta = await this.apiFilmsService.saveMeta(filmMeta);
+      // 値を詰める
+      this.film.casts  = this.casts.value;
+      this.film.staffs = this.staffs.value;
+      this.film.tags   = this.tags.value;
+      const savedFilm = await this.apiFilmsService.save(this.film);
       
+      this.film = savedFilm;  // API 更新後の内容を正とする
       // 更新した値を利用してフォームを初期化する
       this.filmMetaForm = this.formBuilder.group({
-        filmId: [filmMeta.filmId, [Validators.required]],
-        casts : this.formBuilder.array(resultFilmMeta.casts.map(cast => this.createCastFormGroup(cast))),
-        staffs: this.formBuilder.array(resultFilmMeta.staffs.map(staff => this.createStaffFormGroup(staff))),
-        tags  : this.formBuilder.array(resultFilmMeta.tags.map(tag => this.createTagFormGroup(tag))),
+        filmId: [this.film.id, [Validators.required]],
+        casts : this.formBuilder.array(savedFilm.casts.map(cast => this.createCastFormGroup(cast))),
+        staffs: this.formBuilder.array(savedFilm.staffs.map(staff => this.createStaffFormGroup(staff))),
+        tags  : this.formBuilder.array(savedFilm.tags.map(tag => this.createTagFormGroup(tag))),
         newCast : this.createCastFormGroup(),
         newStaff: this.createStaffFormGroup(),
         newTag  : this.createTagFormGroup()
