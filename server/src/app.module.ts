@@ -24,7 +24,8 @@ import { AppController } from './app.controller';
         Staff,
         Tag
       ],
-      synchronize: true
+      synchronize: true,
+      logging: true
     }),
     AuthModule,
     FilmsModule

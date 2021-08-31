@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { Film } from '../../../../../../../server/src/entities/film';
 import { FilmMeta } from '../../../../../../../server/src/entities/film-meta';
 import { Cast } from '../../../../../../../server/src/entities/cast';
 import { Staff } from '../../../../../../../server/src/entities/staff';
@@ -15,8 +16,8 @@ import { ApiFilmsService } from '../../services/api-films.service';
   styleUrls: ['./film-meta.component.scss']
 })
 export class FilmMetaComponent implements OnInit {
-  /** 映画情報 ID */
-  @Input() public filmId: number;
+  /** 映画情報 */
+  @Input() public film: Film;
   
   /** コンポーネントを閉じるイベント */
   @Output() public onClosed: EventEmitter<void> = new EventEmitter();
@@ -46,7 +47,7 @@ export class FilmMetaComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
     try {
-      const filmMeta = await this.apiFilmsService.findMeta(this.filmId);
+      const filmMeta = await this.apiFilmsService.findMeta(this.film.id);
       this.filmMetaForm = this.formBuilder.group({
         filmId: [filmMeta.filmId, [Validators.required]],
         casts : this.formBuilder.array(filmMeta.casts.map(cast => this.createCastFormGroup(cast))),
@@ -83,11 +84,12 @@ export class FilmMetaComponent implements OnInit {
     
     this.isSubmitting = true;
     this.errorMessage = '';
+    this.isConfirmedToClose = false;
     try {
       const casts : Array<Cast>  = this.casts.value;
       const staffs: Array<Staff> = this.staffs.value;
       const tags  : Array<Tag>   = this.tags.value;
-      const filmMeta = new FilmMeta(this.filmId, casts, staffs, tags);
+      const filmMeta = new FilmMeta(this.film.id, casts, staffs, tags);
       const resultFilmMeta = await this.apiFilmsService.saveMeta(filmMeta);
       
       // 更新した値を利用してフォームを初期化する
@@ -101,7 +103,6 @@ export class FilmMetaComponent implements OnInit {
         newTag  : this.createTagFormGroup()
       });
       
-      this.isConfirmedToClose = false;
       this.isEdited = false;
     }
     catch(error) {
@@ -126,7 +127,7 @@ export class FilmMetaComponent implements OnInit {
     cast.order = this.casts.length + 1;  // 最終行に追加する
     const createdCastFormGroup = this.createCastFormGroup(cast);
     this.casts.push(createdCastFormGroup);
-    newCastFormGroup.reset({ filmId: this.filmId, order: -1 });  // 値をリセットする
+    newCastFormGroup.reset({ filmId: this.film.id, order: -1 });  // 値をリセットする
     this.isConfirmedToClose = false;  // 「Close」ボタンを初期状態に戻す
     this.isEdited = true;  // 編集状態にする
   }
@@ -153,7 +154,7 @@ export class FilmMetaComponent implements OnInit {
     staff.order = this.staffs.length + 1;  // 最終行に追加する
     const createdStaffFormGroup = this.createStaffFormGroup(staff);
     this.staffs.push(createdStaffFormGroup);
-    newStaffFormGroup.reset({ filmId: this.filmId, order: -1 });  // 値をリセットする
+    newStaffFormGroup.reset({ filmId: this.film.id, order: -1 });  // 値をリセットする
     this.isConfirmedToClose = false;  // 「Close」ボタンを初期状態に戻す
     this.isEdited = true;  // 編集状態にする
   }
@@ -180,7 +181,7 @@ export class FilmMetaComponent implements OnInit {
     tag.order = this.tags.length + 1;  // 最終行に追加する
     const createdTagFormGroup = this.createTagFormGroup(tag);
     this.tags.push(createdTagFormGroup);
-    newTagFormGroup.reset({ filmId: this.filmId, order: -1 });  // 値をリセットする
+    newTagFormGroup.reset({ filmId: this.film.id, order: -1 });  // 値をリセットする
     this.isConfirmedToClose = false;  // 「Close」ボタンを初期状態に戻す
     this.isEdited = true;  // 編集状態にする
   }
@@ -223,7 +224,7 @@ export class FilmMetaComponent implements OnInit {
    */
   private createCastFormGroup(cast?: Cast): FormGroup {
     return this.formBuilder.group({
-      filmId: [this.filmId      , [Validators.required]],
+      filmId: [this.film.id     , [Validators.required]],
       order : [cast?.order ?? -1, [Validators.required]],
       role  : [cast?.role  ?? '', [Validators.required]],
       name  : [cast?.name  ?? '', [Validators.required]]
@@ -238,7 +239,7 @@ export class FilmMetaComponent implements OnInit {
    */
   private createStaffFormGroup(staff?: Staff): FormGroup {
     return this.formBuilder.group({
-      filmId: [this.filmId       , [Validators.required]],
+      filmId: [this.film.id      , [Validators.required]],
       order : [staff?.order ?? -1, [Validators.required]],
       role  : [staff?.role  ?? '', [Validators.required]],
       name  : [staff?.name  ?? '', [Validators.required]]
@@ -253,7 +254,7 @@ export class FilmMetaComponent implements OnInit {
    */
   private createTagFormGroup(tag?: Tag): FormGroup {
     return this.formBuilder.group({
-      filmId: [this.filmId     , [Validators.required]],
+      filmId: [this.film.id    , [Validators.required]],
       order : [tag?.order ?? -1, [Validators.required]],
       name  : [tag?.name  ?? '', [Validators.required]]
     });

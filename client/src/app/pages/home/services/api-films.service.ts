@@ -36,6 +36,11 @@ export class ApiFilmsService {
     return await this.httpClient.put<Film>(`${environment.apiUrl}/films/${film.id}`, film).toPromise();
   }
   
+  /** 映画情報を削除する */
+  public async remove(filmId: number): Promise<boolean> {
+    return await this.httpClient.delete<boolean>(`${environment.apiUrl}/films/${filmId}`).toPromise();
+  }
+  
   /** 映画メタ情報を取得する */
   public async findMeta(filmId: number): Promise<FilmMeta> {
     return await this.httpClient.get<FilmMeta>(`${environment.apiUrl}/films/${filmId}/meta`).toPromise();

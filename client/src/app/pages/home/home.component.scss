@@ -1,5 +1,5 @@
 .controllers {
-  min-height: 4rem;  // フォームと文字列どちらが表示されても高さをズラさないようにする・margin-bottom は付けないがイイカンジにスペースが開いている
+  min-height: 3rem;  // フォームと文字列どちらが表示されても高さをズラさないようにする・margin-bottom は付けないがイイカンジにスペースが開いている
   
   .controllers-container {
     display: grid;
@@ -10,6 +10,7 @@
       overflow-x: auto;
     }
     
+    // 検索フォーム
     form {
       margin: 0;
       white-space: nowrap;
@@ -39,26 +40,18 @@
   }
 }
 
+.message-container {
+  min-height: 2.25rem;
+}
+
 table {
-  .column-published-year,
-  .column-operation {
+  .column-published-year {
     min-width: 4.5rem;
     width: 1%;
     max-width: 4.5rem;
     
     input[type="text"] {
       text-align: center;
-    }
-    
-    .button-meta,
-    .button-update {
-      display: inline-block;
-      width: 50%;
-    }
-    
-    .button-create {
-      display: inline-block;
-      width: 100%;
     }
   }
   
@@ -77,6 +70,25 @@ table {
     min-width: 15rem;
     width: 30%;
   }
+  
+  .column-operation {
+    min-width: 7rem;
+    width: 1%;
+    max-width: 7rem;
+    
+    .operation-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    
+    button {
+      width: 100%;
+    }
+  }
+  
+  .not-found {
+    padding: 1rem .5rem;
+  }
 }
 
 .modal-wrapper {
@@ -94,5 +106,20 @@ table {
     border-radius: 6px;
     padding: 1rem;
     background: var(--nn-colour-white);
+  }
+}
+
+.removing-confirmation-modal {
+  h2 {
+    margin-top: 0;
+  }
+  
+  .buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    
+    & > :last-child {
+      text-align: right;
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 import { Film } from '../entities/film';
@@ -30,6 +30,13 @@ export class FilmsController {
   @Put(':id')
   public async save(@Body() film: Film): Promise<Film> {
     return this.filmsService.save(film);
+  }
+  
+  /** 映画情報を削除する */
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  public async remove(@Param('id') filmId: number): Promise<boolean> {
+    return this.filmsService.remove(filmId);
   }
   
   /** 映画メタ情報を取得する */

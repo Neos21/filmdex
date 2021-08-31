@@ -1,9 +1,9 @@
 .controllers {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr auto;
   margin: 0 0 1rem;
   
-  :last-child {
+  & > :last-child {
     text-align: right;
   }
   
@@ -14,6 +14,17 @@
 
 form {
   margin: 0;
+}
+
+dl {
+  dt {
+    margin: 0;
+  }
+  
+  dd {
+    margin-top: 0;
+    margin-bottom: .5rem;
+  }
 }
 
 table {

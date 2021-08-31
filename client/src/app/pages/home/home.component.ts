@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit {
   /** 検索フォーム */
   public searchForm: FormGroup;
   
-  /** 検索対象カラム定義 */
+  /** 検索対象カラム定義 */  // TODO : サーバサイドと共有資産にする
   public searchTargetColumns: Array<{ name: string; value: string; }> = [
     { name: '公開年'  , value: 'published_year' },  // 1年指定
     { name: '公開年代', value: 'published_age'  },  // 10年区切りの年代 (00～09 年)
@@ -37,8 +37,17 @@ export class HomeComponent implements OnInit {
   /** API 通信中か否か */
   public isSubmitting: boolean = false;
   
-  /** メタ情報を編集中の ID・編集中でなければ null */
-  public editingFilmId: number | null = null;
+  /** 検索結果を表示しているか否か (false なら全件表示) */
+  public isSearch: boolean = false;
+  
+  /** 「登録」ボタンの押下による API 通信か否か (false なら更新時) */
+  public isCreate: boolean = false;
+  
+  /** メタ情報を編集中の映画情報・編集中でなければ null */
+  public editingFilm: Film | null = null;
+  
+  /** 削除確認中の映画情報・削除確認中でなければ null */
+  public removingFilm: Film | null = null;
   
   /** エラーメッセージ */
   public errorMessage: string = '';
@@ -55,6 +64,7 @@ export class HomeComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
     try {
+      this.isSearch = false;
       const films = await this.apiFilmsService.findAll();
       this.filmsForm = this.formBuilder.group({
         films: this.formBuilder.array(films.map(film => this.createFormGroup(film))),
@@ -63,8 +73,8 @@ export class HomeComponent implements OnInit {
       
       this.searchForm = this.formBuilder.group({
         targetColumn: ['title', [Validators.required]],
-        searchText  : [''     , [Validators.required]],
-        publishedAge: ['']  // select 要素のデフォルト選択を管理するためのモノ・値は searchText に同期して管理する
+        searchText  : [''],  // 空値の場合は全件検索とする
+        publishedAge: ['']   // select 要素のデフォルト選択を管理するためのモノ・値は searchText に同期して管理する
       });
     }
     catch(error) {
@@ -95,10 +105,12 @@ export class HomeComponent implements OnInit {
     this.searchForm.controls.searchText.setValue(this.searchForm.value.publishedAge);
   }
   
-  /** 「検索条件」で「公開年」を選択している場合は「検索文字列」が整数4桁でないと「検索」ボタンを押下できないようにする */
+  /** 「検索条件」で「公開年」を選択している場合は「検索文字列」が空値か整数4桁でないと「検索」ボタンを押下できないようにする */
   public isInvalidPublishedYear(): boolean {
     if(this.searchForm.value.targetColumn !== 'published_year') return false;
-    return !(/^\d{4}$/u).test(this.searchForm.value.searchText);
+    const searchText = this.forceTrim(this.searchForm.value.searchText);
+    if(!searchText) return false;
+    return !(/^\d{4}$/u).test(searchText);
   }
   
   /** 「検索」ボタン押下時 */
@@ -107,8 +119,10 @@ export class HomeComponent implements OnInit {
     this.errorMessage = '';
     try {
       const targetColumn = this.searchForm.value.targetColumn;
-      const searchText   = this.searchForm.value.searchText;
-      const films = await this.apiFilmsService.search(targetColumn, searchText);
+      const searchText   = this.forceTrim(this.searchForm.value.searchText);
+      
+      this.isSearch = searchText !== '';  // 「検索文字列」が空なら全件取得にする
+      const films = this.isSearch ? await this.apiFilmsService.search(targetColumn, searchText) : await this.apiFilmsService.findAll();
       this.filmsForm = this.formBuilder.group({
         films: this.formBuilder.array(films.map(film => this.createFormGroup(film))),
         newFilm: this.createFormGroup()
@@ -157,6 +171,7 @@ export class HomeComponent implements OnInit {
   public async onCreate(): Promise<void> {
     if(this.isSubmitting) return;  // API 通信中は何もしない
     
+    this.isCreate = true;
     this.isSubmitting = true;
     this.errorMessage = '';
     try {
@@ -173,19 +188,52 @@ export class HomeComponent implements OnInit {
     }
     finally {
       this.isSubmitting = false;
+      this.isCreate = false;
     }
   }
   
   /** 「詳細」ボタン押下時 : メタ情報の編集開始 */
   public onStartEditMeta(filmFormGroup: AbstractControl): void {
-    const filmId = filmFormGroup.value.id;
-    if(this.editingFilmId != null) return console.warn('Home Component : On Start Edit Meta : Aborted', { editingFilmId: this.editingFilmId, filmId: filmId });
-    this.editingFilmId = filmId;
+    const film = new Film(filmFormGroup.value);
+    if(this.editingFilm != null) return console.warn('Home Component : On Start Edit Meta : Aborted', { editingFilm: this.editingFilm, film: film });
+    this.editingFilm = film;
   }
   
   /** メタ情報の編集終了時 */
   public onEndEditMeta(): void {
-    this.editingFilmId = null;
+    this.editingFilm = null;
+  }
+  
+  /** 「削除」ボタン押下時 : 削除確認モーダルを開く */
+  public onStartRemove(filmFormGroup: AbstractControl): void {
+    const film = new Film(filmFormGroup.value);
+    if(this.removingFilm != null) return console.warn('Home Component : On Start Remove : Aborted', { removingFilm: this.removingFilm, film: film });
+    this.errorMessage = '';
+    this.removingFilm = film;
+  }
+  
+  /** モーダルの「削除」ボタン押下時 */
+  public async onRemove(): Promise<void> {
+    if(this.removingFilm == null) return console.warn('Home Component : On Remove : Aborted');  // 削除対象がないので異常事態
+    
+    this.errorMessage = '';
+    let isSucceeded = false;
+    try {
+      const filmId = this.removingFilm.id;
+      await this.apiFilmsService.remove(filmId);
+      
+      isSucceeded = true;
+    }
+    catch(error) {
+      console.error('Home Component : On Remove', error);
+      this.errorMessage = 'Failed To Remove';
+    }
+    finally {
+      if(isSucceeded) {  // 削除成功後・モーダルを閉じて初期表示状態に戻す
+        this.removingFilm = null;
+        await this.onLoad();
+      }
+    }
   }
   
   /** formArrayName 属性解決のための Getter */
@@ -227,5 +275,16 @@ export class HomeComponent implements OnInit {
       currentAge += 10;
     }
     return ages;
+  }
+  
+  /**
+   * どんな値も安全にトリムする
+   * 
+   * @param value 値
+   * @return 文字列化してトリムした値
+   */
+  private forceTrim(value: string | number | null): string {
+    if(value == null) return '';
+    return String(value).trim();
   }
 }

@@ -19,49 +19,68 @@ export class FilmsService {
     private connection: Connection
   ) { }
   
-  /** 映画情報を取得する */
+  /**
+   * 映画情報を取得する
+   * 
+   * @param targetColumn 検索条件・ない場合は全件検索となる
+   * @param searchText 検索条件・ない場合は全件検索となる
+   * @return 映画情報の配列
+   */
   public async find(targetColumn?: string, searchText?: string): Promise<Array<Film>> {
-    const options: FindManyOptions<Film> = {
-      order: {
-        publishedYear: 'ASC',
-        title: 'ASC'
-      }
-    };
+    // Repository API の find() だと Error: Cannot query across one-to-many for property エラーが回避できないので Query Builder API を使う
+    let queryBuilder = this.filmsRepository.createQueryBuilder('films');
+    //.orderBy('published_year', 'ASC').orderBy('title', 'ASC');
+    //const options: FindManyOptions<Film> = { order: { publishedYear: 'ASC', title: 'ASC' } };
+    
     if(targetColumn && searchText) {  // 検索条件アリ
       targetColumn = targetColumn.trim();
       searchText   = searchText.trim();
       
       if(targetColumn === 'published_year') {  // 1年指定
-        options.where = { publishedYear: searchText }
+        queryBuilder = queryBuilder.where('published_year = :publishedYear', { publishedYear: searchText });
       }
       else if(targetColumn === 'published_age') {  // 10年区切りの年代 (00～09 年)
         const startYear = Number(searchText);
         const endYear   = startYear + 9;
-        options.where = { publishedYear: Between(startYear, endYear) };
+        queryBuilder = queryBuilder.where('published_year BETWEEN :startYear AND :endYear', { startYear: startYear, endYear: endYear });
       }
       else if(targetColumn === 'title') {  // 原題・邦題両方を対象に部分一致
-        options.where = [
-          { title        : Like(`%${searchText}%`) },
-          { japaneseTitle: Like(`%${searchText}%`) }
-        ];
+        queryBuilder = queryBuilder.where('title LIKE :title', { title: `${searchText}%` }).orWhere('japanese_title LIKE :title', { title: `${searchText}%` });
       }
-      // TODO : 親子関係を作らないと検索できない
-      //else if(targetColumn === 'cast') {
-      //  options.where = { cast: searchText };
-      //}
-      //else if(targetColumn === 'staff') {
-      //  options.where = { staff: searchText };
-      //}
-      //else if(targetColumn === 'tag') {
-      //  options.where = { tag: searchText };
-      //}
+      else if(targetColumn === 'cast') {
+        queryBuilder = queryBuilder
+          .leftJoinAndSelect('films.casts', 'casts')
+          .where(`casts.name LIKE :name`, { name: `%${searchText}%` }).orWhere('casts.role LIKE :name', { name: `${searchText}%` });
+      }
+      else if(targetColumn === 'staff') {
+        queryBuilder = queryBuilder
+          .leftJoinAndSelect('films.staffs', 'staffs')
+          .where(`staffs.name LIKE :name`, { name: `%${searchText}%` }).orWhere('staffs.role LIKE :name', { name: `${searchText}%` });
+      }
+      else if(targetColumn === 'tag') {
+        queryBuilder = queryBuilder
+          .leftJoinAndSelect('films.tags', 'tags')
+          .where(`tags.name LIKE :name`, { name: `%${searchText}%` });
+      }
     }
-    return await this.filmsRepository.find(options);
+    return await queryBuilder.getMany();
   }
   
   /** 映画情報を登録・更新する */
   public async save(film: Film): Promise<Film> {
     return await this.filmsRepository.save(film);
+  }
+  
+  /** 映画情報・映画メタ情報を削除する */
+  public async remove(filmId: number): Promise<boolean> {
+    return await this.connection.transaction(async (entityManager) => {
+      const deleteOptions = { filmId: filmId };
+      await entityManager.delete(Cast , deleteOptions);
+      await entityManager.delete(Staff, deleteOptions);
+      await entityManager.delete(Tag  , deleteOptions);
+      await entityManager.delete(Film, { id: filmId });  // DeleteResult オブジェクト
+      return true;  // 削除成功時は true だけ返しておく (DeleteResult オブジェクトには特に情報ないので)
+    });
   }
   
   /** 映画メタ情報を取得する */

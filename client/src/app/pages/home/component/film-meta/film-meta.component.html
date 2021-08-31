@@ -1,18 +1,27 @@
 <div class="controllers">
   <div>
-    <div [hidden]="!isLoading"                                                       class="info-message"   >読込中…              </div>
-    <div [hidden]="isLoading || isSubmitting || errorMessage || isConfirmedToClose"  class="text-bold"      >Film Meta             </div>
-    <div [hidden]="isLoading || isSubmitting || errorMessage || !isConfirmedToClose" class="warning-message">Are You Sure To Close?</div>
-    <div [hidden]="isLoading || !isSubmitting"                                       class="info-message"   >更新中…              </div>
-    <div [hidden]="isLoading || !errorMessage"                                       class="error-message"  >{{ errorMessage }}    </div>
+    <div [hidden]="isSubmitting || isConfirmedToClose"  class="text-bold"      >映画メタ情報        </div>
+    <div [hidden]="isSubmitting || !isConfirmedToClose" class="warning-message">変更を破棄しますか？</div>
+    <div [hidden]="!isSubmitting"                       class="info-message"   >更新中…            </div>  <!-- 下部でも出してる -->
   </div>
   <div>
     <button type="button" class="small-button" [disabled]="isLoading || isSubmitting" (click)="isConfirmedToClose = false" *ngIf="isConfirmedToClose">Cancel</button>
-    <button type="button" class="small-button" [disabled]="isLoading || isSubmitting" (click)="onClose()">{{ isConfirmedToClose ? 'Yes Close!' : 'Close' }}</button>
+    <button type="button" class="small-button" [disabled]="isLoading || isSubmitting" (click)="onClose()">{{ isConfirmedToClose ? 'Yes Close' : 'Close' }}</button>
   </div>
 </div>
 
+<div [hidden]="!isLoading" class="info-message">読込中…</div>
+
 <form [formGroup]="filmMetaForm" *ngIf="!isLoading">
+  <dl>
+    <dt>公開年・原題<ng-container *ngIf="film.japaneseTitle">・邦題</ng-container></dt>
+    <dd>{{ film.publishedYear }}年 {{ film.title }}<ng-container *ngIf="film.japaneseTitle"> ({{ film.japaneseTitle }})</ng-container></dd>
+    <dt>あらすじ</dt>
+    <dd><ng-container *ngIf="film.scenario; else noScenario">{{ film.scenario }}</ng-container><ng-template #noScenario>(未入力)</ng-template></dd>
+    <dt>感想</dt>
+    <dd><ng-container *ngIf="film.review; else noReview">{{ film.review }}</ng-container><ng-template #noReview>(未入力)</ng-template></dd>
+  </dl>
+  
   <div class="table-wrapper">
     <table class="form-table">
       <caption>キャスト</caption>
@@ -102,9 +111,9 @@
             <td class="column-name"     ><input type="text" formControlName="name"  placeholder="タグ名" required></td>
             <td class="column-operation">
               <div class="operation-buttons">
-                <button type="button" [disabled]="isSubmitting || i === 0"     (click)="onUpTag(i)"    >↑</button>
-                <button type="button" [disabled]="isSubmitting || i === l - 1" (click)="onDownTag(i)"  >↓</button>
-                <button type="button" [disabled]="isSubmitting"                (click)="onRemoveTag(i)">×</button>
+                <button type="button" title="上へ" [disabled]="isSubmitting || i === 0"     (click)="onUpTag(i)"    >↑</button>
+                <button type="button" title="下へ" [disabled]="isSubmitting || i === l - 1" (click)="onDownTag(i)"  >↓</button>
+                <button type="button" title="削除" [disabled]="isSubmitting"                (click)="onRemoveTag(i)">×</button>
               </div>
             </td>
           </tr>
@@ -117,6 +126,12 @@
       </tbody>
     </table>
   </div>
-  
-  <div class="text-right"><button type="button" (click)="onUpdate()" [disabled]="isDisabledUpdateButton() || isSubmitting">更新</button></div>
 </form>
+
+<div class="controllers">
+  <div>
+    <div [hidden]="!isSubmitting" class="info-message" >更新中…          </div>
+    <div [hidden]="!errorMessage" class="error-message">{{ errorMessage }}</div>
+  </div>
+  <div><button type="button" (click)="onUpdate()" [disabled]="isLoading || isSubmitting || isDisabledUpdateButton()">更新</button></div>
+</div>
