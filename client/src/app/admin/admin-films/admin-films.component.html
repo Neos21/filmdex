@@ -5,6 +5,7 @@
 <p class="text-info"   *ngIf="currentState === 'searching'">検索中…</p>
 <p class="text-info"   *ngIf="currentState === 'creating'" >登録中…</p>
 <p class="text-info"   *ngIf="currentState === 'updating'" >更新中…</p>
+<p class="text-info"   *ngIf="currentState === 'exporting'">出力中…</p>
 <p class="text-bold"   *ngIf="currentState === '' || currentState === 'loaded' || currentState === 'searched'">Admin : Films</p>
 <p class="text-danger" *ngIf="errorMessage">{{ errorMessage }}</p>
 
@@ -59,6 +60,13 @@
     </tbody>
   </table>
 </form>
+
+<hr>
+
+<div class="grid-2-columns">
+  <button type="button" [disabled]="isDisabled()" (click)="onExportToJson()">Export To JSON</button>
+  <button type="button" [disabled]="isDisabled()" (click)="onLogout()">Logout</button>
+</div>
 
 <div class="modal-wrapper" *ngIf="editingFilm != null">
   <div class="modal-container">

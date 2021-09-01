@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { paths } from './scripts/export-to-json-function';
+
 import { Film } from './entities/film';
 import { Cast } from './entities/cast';
 import { Staff } from './entities/staff';
@@ -17,15 +19,15 @@ import { AppController } from './app.controller';
     // https://docs.nestjs.com/techniques/database
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: './example.sqlite3.db',  // server/ 直下からのパス
+      database: paths.sqliteDbFilePath,  // 標準は server/ 直下からのパス
       entities: [
         Film,
         Cast,
         Staff,
         Tag
       ],
-      synchronize: true,
-      logging: true
+      synchronize: false,
+      logging: false
     }),
     AuthModule,
     FilmsModule

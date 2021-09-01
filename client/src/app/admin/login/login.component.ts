@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { AuthGuard } from '../../shared/guards/auth.guard';
+import { AuthGuard } from '../guards/auth.guard';
 
 /** 「Login」画面 */
 @Component({

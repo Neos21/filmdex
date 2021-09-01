@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { PublicApiFilmsService } from './services/public-api-films.service';
 import { SearchFormComponent } from './components/search-form/search-form.component';
 
 /** Shared Module */
@@ -13,9 +12,6 @@ import { SearchFormComponent } from './components/search-form/search-form.compon
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule
-  ],
-  providers: [
-    PublicApiFilmsService
   ],
   declarations: [
     SearchFormComponent

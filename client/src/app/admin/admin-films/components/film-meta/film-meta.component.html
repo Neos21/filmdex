@@ -14,7 +14,7 @@
 <form *ngIf="filmMetaForm" [formGroup]="filmMetaForm">
   <dl>
     <dt>公開年・原題<ng-container *ngIf="film.japaneseTitle">・邦題</ng-container></dt>
-    <dd>{{ film.publishedYear }}年 : {{ film.title }}<ng-container *ngIf="film.japaneseTitle"> ({{ film.japaneseTitle }})</ng-container></dd>
+    <dd>{{ film.publishedYear }}年 : {{ film.title }}<ng-container *ngIf="film.japaneseTitle"> {{ film.japaneseTitle }}</ng-container></dd>
     <dt>あらすじ</dt>
     <dd>
       <ng-container *ngIf="film.scenario; else noScenario">{{ film.scenario }}</ng-container>

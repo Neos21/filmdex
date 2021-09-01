@@ -21,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(BaseJwtStrategy) {
    * @param payload Payload (AuthService#login() で定義している)
    * @return 認証ユーザ情報
    */
-  public async validate(payload: AuthInfo): Promise<AuthInfo> {
+  public validate(payload: AuthInfo): AuthInfo {
     return new AuthInfo(payload.userName);
   }
 }

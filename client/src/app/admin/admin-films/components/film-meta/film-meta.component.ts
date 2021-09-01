@@ -1,12 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Film } from '../../../../../../../../server/src/entities/film';
-import { Cast } from '../../../../../../../../server/src/entities/cast';
-import { Staff } from '../../../../../../../../server/src/entities/staff';
-import { Tag } from '../../../../../../../../server/src/entities/tag';
-
-import { PublicApiFilmsService } from '../../../../../shared/services/public-api-films.service';
+import { Film } from '../../../../../../../server/src/entities/film';
+import { Cast } from '../../../../../../../server/src/entities/cast';
+import { Staff } from '../../../../../../../server/src/entities/staff';
+import { Tag } from '../../../../../../../server/src/entities/tag';
 
 import { AdminApiFilmsService } from '../../../services/admin-api-films.service';
 
@@ -41,14 +39,14 @@ export class FilmMetaComponent implements OnInit {
   /** エラーメッセージ */
   public errorMessage: string = '';
   
-  constructor(private formBuilder: FormBuilder, private publicApiFilmsService: PublicApiFilmsService, private adminApiFilmsService: AdminApiFilmsService) { }
+  constructor(private formBuilder: FormBuilder, private adminApiFilmsService: AdminApiFilmsService) { }
   
   /** コンポーネント初期表示時 */
   public async ngOnInit(): Promise<void> {
     this.isLoading = true;
     this.errorMessage = '';
     try {
-      const film = await this.publicApiFilmsService.findById(this.film.id);
+      const film = await this.adminApiFilmsService.findById(this.film.id);
       
       this.film = film;  // API から取得した情報を正とする
       this.filmMetaForm = this.formBuilder.group({

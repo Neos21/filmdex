@@ -3,10 +3,8 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/c
 import { Observable } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 
-import { constants } from '../../shared/classes/constants';
-
 /** カスタム HttpClient インターセプタ */
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class CustomHttpInterceptor implements HttpInterceptor {
   /**
    * HttpClient からの通信の度に以下の割り込み処理を行う
@@ -20,7 +18,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
     request = request.clone({ withCredentials: true });
     
     // JWT アクセストークンが取得できればリクエストヘッダに設定する (キャッシュすることも考えたがログアウト時にキャッシュをクリアするのが難しいため止める)
-    const accessToken = window.localStorage.getItem(constants.localStorageKeyAccessToken);
+    const accessToken = window.localStorage.getItem('accessToken');
     if(accessToken) {
       request = request.clone({
         headers: request.headers.set('Authorization', `Bearer ${accessToken}`)

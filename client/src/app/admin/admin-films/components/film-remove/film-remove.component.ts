@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-import { Film } from '../../../../../../../../server/src/entities/film';
+import { Film } from '../../../../../../../server/src/entities/film';
 
 import { AdminApiFilmsService } from '../../../services/admin-api-films.service';
 

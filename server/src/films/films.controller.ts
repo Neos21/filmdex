@@ -31,7 +31,7 @@ export class FilmsController {
    */
   @Get(':id')
   public async findById(@Param('id') id: number): Promise<Film> {
-    return this.filmsService.findById(id);
+    return await this.filmsService.findById(id);
   }
   
   /**
@@ -43,7 +43,7 @@ export class FilmsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   public async create(@Body() film: Film): Promise<Film> {
-    return this.filmsService.save(film);
+    return await this.filmsService.save(film);
   }
   
   /**
@@ -55,7 +55,7 @@ export class FilmsController {
   @UseGuards(JwtAuthGuard)
   @Put(':id')
   public async save(@Body() film: Film): Promise<Film> {
-    return this.filmsService.save(film);
+    return await this.filmsService.save(film);
   }
   
   /**
@@ -67,6 +67,6 @@ export class FilmsController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   public async remove(@Param('id') id: number): Promise<boolean> {
-    return this.filmsService.remove(id);
+    return await this.filmsService.remove(id);
   }
 }

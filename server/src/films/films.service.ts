@@ -32,7 +32,7 @@ export class FilmsService {
       .leftJoinAndSelect('films.tags', 'tags');
     
     if(targetColumn && searchText) {
-      targetColumn = targetColumn.trim();  // くらいあんとさいどの処理を信用せずに Trim する
+      targetColumn = targetColumn.trim();  // クライアントサイドの処理を信用せずに Trim する
       searchText   = searchText.trim();
       
       if(targetColumn === searchTargetColumns.publishedYear.key) {
@@ -110,10 +110,10 @@ export class FilmsService {
       // Film テーブルのみ登録・更新する
       const savedFilm = await entityManager.save(new Film(film));
       
-      // 保存した映画情報の ID を設定し保存する
-      casts  = casts .map((cast ) => { cast .filmId = savedFilm.id; return cast ; });
-      staffs = staffs.map((staff) => { staff.filmId = savedFilm.id; return staff; });
-      tags   = tags  .map((tag  ) => { tag  .filmId = savedFilm.id; return tag  ; });
+      // 保存した映画情報の ID を設定し保存する (readonly を as any で回避する)
+      casts  = casts .map((cast ) => { (cast  as any).filmId = savedFilm.id; return cast ; });
+      staffs = staffs.map((staff) => { (staff as any).filmId = savedFilm.id; return staff; });
+      tags   = tags  .map((tag  ) => { (tag   as any).filmId = savedFilm.id; return tag  ; });
       if(casts .length) await entityManager.save(casts );
       if(staffs.length) await entityManager.save(staffs);
       if(tags  .length) await entityManager.save(tags  );

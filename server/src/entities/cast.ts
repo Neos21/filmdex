@@ -7,7 +7,7 @@ import { Film } from './film';
 export class Cast {
   /** 映画情報 ID */
   @PrimaryColumn({ type: 'integer', name: 'film_id' })
-  public filmId: number;
+  public readonly filmId: number;
   
   /** 並び順 */
   @PrimaryColumn({ type: 'integer', name: 'order' })

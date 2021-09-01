@@ -1,9 +1,6 @@
-<header class="header grid-2-columns">
-  <h1>FilmDeX</h1>
-  <div>  <!-- ボタンの高さを変えないようにする -->
-    <button type="button" tabindex="-1" *ngIf="!isLogined()" [routerLink]="['/login']">Login</button>
-    <button type="button" tabindex="-1" *ngIf="isLogined()"  (click)="onLogout()"     >Logout</button>
-  </div>
+<header class="grid-2-columns header">
+  <h1><a tabindex="-1" [routerLink]="['/']">FilmDeX</a></h1>
+  <div><a href="https://neos21.net/" target="_blank" tabindex="-1">Neo's World</a></div>
 </header>
 
 <main class="main">

@@ -27,7 +27,7 @@ export class LocalStrategy extends PassportStrategy(BaseLocalStrategy) {
    * @return 認証成功時にユーザ情報を返す
    * @throws 認証失敗時
    */
-  public async validate(userName: string, password: string): Promise<AuthInfo> {
+  public validate(userName: string, password: string): AuthInfo {
     if(userName !== 'Neos21' || password !== 'changethis') throw new UnauthorizedException();  // TODO : ユーザ情報を別途管理する
     const authInfo: AuthInfo = { userName };  // new AuthInfo() とすると Expected "payload" to be a plain object エラーになってしまうためクラスにしない
     return authInfo;

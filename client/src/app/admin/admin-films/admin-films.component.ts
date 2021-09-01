@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Film } from '../../../../../../server/src/entities/film';
+import { Film } from '../../../../../server/src/entities/film';
 
-import { PublicApiFilmsService } from '../../../shared/services/public-api-films.service';
+import { AuthGuard } from '../guards/auth.guard';
 
 import { AdminApiFilmsService } from '../services/admin-api-films.service';
 
@@ -17,7 +17,7 @@ export class AdminFilmsComponent implements OnInit {
   /** 映画情報フォーム */
   public filmsForm: FormGroup;
   
-  /** 現在の状態 : loading・loaded・searching・searched・''・creating・updating・modal */
+  /** 現在の状態 : loading・loaded・searching・searched・''・creating・updating・modal・exporting */
   public currentState: string = 'loading';
   
   /** エラーメッセージ */
@@ -32,7 +32,7 @@ export class AdminFilmsComponent implements OnInit {
   /** 最後に検索した条件 */
   private lastFindParams: { targetColumn: string; searchText: string; } | undefined = undefined;
   
-  constructor(private formBuilder: FormBuilder, private publicApiFilmsService: PublicApiFilmsService, private adminApiFilmsService: AdminApiFilmsService) { }
+  constructor(private formBuilder: FormBuilder, private authGuard: AuthGuard, private adminApiFilmsService: AdminApiFilmsService) { }
   
   /** 画面初期表示時 */
   public async ngOnInit(): Promise<void> {
@@ -48,7 +48,7 @@ export class AdminFilmsComponent implements OnInit {
     this.currentState = findParams ? 'searching' : 'loading';
     this.errorMessage = '';
     try {
-      const films = await this.publicApiFilmsService.find(findParams?.targetColumn, findParams?.searchText);
+      const films = await this.adminApiFilmsService.find(findParams?.targetColumn, findParams?.searchText);
       this.filmsForm = this.formBuilder.group({
         films: this.formBuilder.array(films.map(film => this.createFormGroup(film))),
         newFilm: this.createFormGroup()
@@ -70,7 +70,7 @@ export class AdminFilmsComponent implements OnInit {
    * @param filmFormGroup 更新する映画情報
    */
   public async onUpdate(filmFormGroup: AbstractControl): Promise<void> {
-    if(filmFormGroup.pristine || filmFormGroup.invalid || ['creating', 'updating'].includes(this.currentState)) return;  // 未編集・バリデーションエラー時、画面操作中は何もしない
+    if(filmFormGroup.pristine || filmFormGroup.invalid || ['creating', 'updating', 'exporting'].includes(this.currentState)) return;  // 未編集・バリデーションエラー時、画面操作中は何もしない
     
     this.currentState = 'updating';
     this.errorMessage = '';
@@ -96,7 +96,7 @@ export class AdminFilmsComponent implements OnInit {
   
   /** 「登録」ボタン押下時 : 映画情報を登録する */
   public async onCreate(): Promise<void> {
-    if(['creating', 'updating'].includes(this.currentState)) return;  // 画面操作中は何もしない
+    if(['creating', 'updating', 'exporting'].includes(this.currentState)) return;  // 画面操作中は何もしない
     
     this.currentState = 'creating';
     this.errorMessage = '';
@@ -156,7 +156,30 @@ export class AdminFilmsComponent implements OnInit {
    * @return 非活性にする場合は true
    */
   public isDisabled(): boolean {
-    return ['loading', 'searching', 'creating', 'updating'].includes(this.currentState);
+    return ['loading', 'searching', 'creating', 'updating', 'exporting'].includes(this.currentState);
+  }
+  
+  /** 映画情報の SQLite DB ファイルを JSON ファイルにエクスポートする */
+  public async onExportToJson(): Promise<void> {
+    this.currentState = 'exporting';
+    this.errorMessage = '';
+    try {
+      const result = await this.adminApiFilmsService.exportToJson();
+      console.log('Admin Films Component : On Export To JSON', result);
+      if(result.error) throw result.error;
+    }
+    catch(error) {
+      console.error('Admin Films Component : On Export To JSON', error);
+      this.errorMessage = 'Failed To Export To JSON';
+    }
+    finally {
+      this.currentState = '';
+    }
+  }
+  
+  /** 「Logout」ボタン押下時 : ログアウトする */
+  public onLogout(): void {
+    return this.authGuard.logout(true);
   }
   
   public get films(): FormArray { return this.filmsForm.get('films') as FormArray; }

@@ -5,9 +5,11 @@
   "private": true,
   "scripts": {
     "nest": "nest",
+    "ts-node": "ts-node",
     "start": "nest start --watch",
     "build": "rm -rf ./dist && nest build && rm -rf ./dist/*.map ./dist/*.d.ts ./dist/tsconfig.build.tsbuildinfo",
-    "serve": "node dist/main.js"
+    "serve": "node dist/main.js",
+    "exp": "npm run ts-node ./src/scripts/export-to-json.ts"
   },
   "author": "Neo <neos21@gmail.com> (https://neos21.net/)",
   "license": "MIT",
@@ -45,6 +47,7 @@
     "@types/node": "16.7.1",
     "@types/passport-jwt": "3.0.6",
     "@types/passport-local": "1.0.34",
+    "ts-node": "10.2.1",
     "typescript": "4.3.5"
   }
 }

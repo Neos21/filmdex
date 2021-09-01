@@ -4,10 +4,8 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from
 
 import { environment } from '../../../environments/environment';
 
-import { constants } from '../classes/constants';
-
 /** 画面遷移時に認証チェックする */
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class AuthGuard implements CanActivate {
   /** ログインしているか否か */
   public isLogined: boolean = false;
@@ -38,8 +36,8 @@ export class AuthGuard implements CanActivate {
       const auth = { userName, password };
       const { accessToken } = await this.httpClient.post(`${environment.apiUrl}/auth/login`, { userName, password }).toPromise() as Record<string, string>;
       
-      window.localStorage.setItem(constants.localStorageKeyAuth       , JSON.stringify(auth));
-      window.localStorage.setItem(constants.localStorageKeyAccessToken, accessToken);
+      window.localStorage.setItem('auth'       , JSON.stringify(auth));
+      window.localStorage.setItem('accessToken', accessToken);
       this.isLogined = true;
     }
     catch(error) {
@@ -51,11 +49,11 @@ export class AuthGuard implements CanActivate {
   /**
    * LocalStorage に保存されている User Name・Password を利用して再ログイン (JWT アクセストークン再発行) する
    * 
-   * @return 再ログインに成功し遷移を許可する場合は true・遷移を許可しない場合は false を返しつつ /login に遷移させる
+   * @return 再ログインに成功し遷移を許可する場合は true・遷移を許可しない場合は false を返しつつ「ログイン」画面に遷移させる
    */
   public async reLogin(): Promise<boolean> {
     try {
-      const rawAuth = window.localStorage.getItem(constants.localStorageKeyAuth);
+      const rawAuth = window.localStorage.getItem('auth');
       if(!rawAuth) throw new Error('LocalStorage Is Empty, Cannot Re Login');
       
       const auth = JSON.parse(rawAuth);
@@ -76,12 +74,12 @@ export class AuthGuard implements CanActivate {
    * サーバサイドは JWT アクセストークンにて認証しているため、サーバサイドにはログアウトの概念はない
    * クライアントサイドで JWT アクセストークンを破棄してしまえば、いずれトークン有効期限が切れて再ログインが必要になる
    * 
-   * @param needsNavigateToLoginPage true を指定した場合は /login への遷移も行う
+   * @param needsNavigateToLoginPage true を指定した場合は「ログイン」画面への遷移も行う
    */
   public logout(needsNavigateToLoginPage: boolean = false): void {
-    window.localStorage.removeItem(constants.localStorageKeyAuth);
-    window.localStorage.removeItem(constants.localStorageKeyAccessToken);
+    window.localStorage.removeItem('auth');
+    window.localStorage.removeItem('accessToken');
     this.isLogined = false;
-    if(needsNavigateToLoginPage) this.router.navigate(['/login']);
+    if(needsNavigateToLoginPage) this.router.navigate(['/admin/login']);
   }
 }

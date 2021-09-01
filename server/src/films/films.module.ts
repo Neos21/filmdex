@@ -7,7 +7,9 @@ import { Staff } from '../entities/staff';
 import { Tag } from '../entities/tag';
 
 import { FilmsService } from './films.service';
+import { ExportToJsonService } from './export-to-json.service';
 import { FilmsController } from './films.controller';
+import { ExportToJsonController } from './export-to-json.controller';
 
 @Module({
   imports: [
@@ -20,10 +22,12 @@ import { FilmsController } from './films.controller';
     ])
   ],
   providers: [
-    FilmsService
+    FilmsService,
+    ExportToJsonService
   ],
   controllers: [
-    FilmsController
+    FilmsController,
+    ExportToJsonController
   ]
 })
 export class FilmsModule {}
