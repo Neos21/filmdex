@@ -10,8 +10,16 @@
     margin: 0;
   }
   
-  div {
-    font-size: .9rem;
+  .links {
+    font-size: .8rem;
+    
+    div:first-child {
+      margin-bottom: .25rem;
+    }
+    
+    a {
+      color: var(--nn-colour-grey-200);
+    }
   }
   
   a {
