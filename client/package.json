@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --base-href ./",
     "serve": "sirv ./dist/ --port 4200"
   },
   "author": "Neo <neos21@gmail.com> (https://neos21.net/)",
