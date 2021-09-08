@@ -2,6 +2,7 @@
 Thumbs.db
 
 *.log
+nohup.out
 
 node_modules/
 dist/
