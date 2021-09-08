@@ -29,7 +29,7 @@ export class LocalStrategy extends PassportStrategy(BaseLocalStrategy) {
    * @throws 認証失敗時
    */
   public validate(userName: string, password: string): AuthInfo {
-    if(userName !== this.configService.get<string>('FILMDEX_PASSPORT_USERNAME') || password !== this.configService.get<string>('FILMDEX_PASSPORT_PASSWORD')) throw new UnauthorizedException();  // TODO : ユーザ情報を別途管理する
+    if(userName !== this.configService.get<string>('FILMDEX_PASSPORT_USERNAME') || password !== this.configService.get<string>('FILMDEX_PASSPORT_PASSWORD')) throw new UnauthorizedException();
     const authInfo: AuthInfo = { userName };  // new AuthInfo() とすると Expected "payload" to be a plain object エラーになってしまうためクラスにしない
     return authInfo;
   }

@@ -1,0 +1,33 @@
+name: Deploy To GitHub Pages
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Install
+        env :
+          # Stop Angular CLI asking for collecting analytics when I use ng build
+          NG_CLI_ANALYTICS: ci
+        working-directory: ./client
+        run : npm install
+      - name: Build To dist/ Directory
+        env :
+          NG_CLI_ANALYTICS: ci
+        working-directory: ./client
+        run : npm run build
+        # ./server/db/filmdex.sqlite3.db からのエクスポートはしない
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          # GITHUB_TOKEN Secret は自動的に生成される
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./client/dist
