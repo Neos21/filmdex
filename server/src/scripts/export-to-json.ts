@@ -21,7 +21,6 @@ import { paths, select, removeMeta, stringify, writeFile, isExist, copyFile } fr
     const isExistClientSrc  = await isExist(paths.srcJsonDirectoryPath);
     const isExistClientDist = await isExist(paths.distJsonDirectoryPath);
     if(!isExistClientSrc && !isExistClientDist) throw new Error('Client Src And Client Dist Directory Are Not Exist');
-    console.log('  Paths : ', paths);
     
     await createConnection({
       type       : 'sqlite',

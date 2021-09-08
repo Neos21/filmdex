@@ -99,12 +99,12 @@ export function removeMeta(films: Array<any>): Array<any> {
  * 映画情報の配列を JSON 文字列に変換する
  * 
  * @param films 映画情報の配列
- * @param isBeautify 未指定か true にするとインデント付き・false にするとインデントなしで変換する
+ * @param isBeautify true にするとインデント付き・未指定か false にすると1行につき1レコード・インデントやスペースなしで変換する
  * @return JSON 文字列 (末尾に改行あり)
  */
-export function stringify(films: Array<any>, isBeautify: boolean = true): string {
+export function stringify(films: Array<any>, isBeautify: boolean = false): string {
   if(isBeautify) return JSON.stringify(films, null, '  ') + '\n';
-  return JSON.stringify(films) + '\n';
+  return `[\n${films.map((film) => JSON.stringify(film)).join(',\n')}\n]\n`;
 }
 
 /**
