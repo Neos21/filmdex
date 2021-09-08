@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
 import { Strategy as BaseLocalStrategy } from 'passport-local';  // JwtStrategy と親クラスを区別するために名前を付けておく
 
 import { AuthInfo } from './auth-info';
@@ -7,7 +8,7 @@ import { AuthInfo } from './auth-info';
 /** Local Strategy : User Name と Password を使って認証を行うクラス */
 @Injectable()
 export class LocalStrategy extends PassportStrategy(BaseLocalStrategy) {
-  constructor() {
+  constructor(private configService: ConfigService) {
     super({
       usernameField: 'userName',  // ユーザ認証時に POST するキーをデフォルトの `username` (全小文字) から変更する
       passwordField: 'password'
@@ -28,7 +29,7 @@ export class LocalStrategy extends PassportStrategy(BaseLocalStrategy) {
    * @throws 認証失敗時
    */
   public validate(userName: string, password: string): AuthInfo {
-    if(userName !== 'Neos21' || password !== 'changethis') throw new UnauthorizedException();  // TODO : ユーザ情報を別途管理する
+    if(userName !== this.configService.get<string>('FILMDEX_PASSPORT_USERNAME') || password !== this.configService.get<string>('FILMDEX_PASSPORT_PASSWORD')) throw new UnauthorizedException();  // TODO : ユーザ情報を別途管理する
     const authInfo: AuthInfo = { userName };  // new AuthInfo() とすると Expected "payload" to be a plain object エラーになってしまうためクラスにしない
     return authInfo;
   }

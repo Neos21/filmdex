@@ -52,7 +52,13 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            // ng serve で出てくる Warning を抑止する
+            "allowedCommonJsDependencies": [
+              "debug",
+              "buffer",
+              "sha.js"
+            ]
           },
           "configurations": {
             "production": {

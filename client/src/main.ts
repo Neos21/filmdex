@@ -6,6 +6,7 @@ import { environment } from './environments/environment';
 import { AppModule } from './app/app.module';
 
 if(environment.production) {
+  console.log('FilmDeX Client');  // 本番モード確認用
   enableProdMode();
 }
 

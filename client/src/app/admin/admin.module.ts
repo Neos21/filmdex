@@ -14,6 +14,7 @@ import { AdminFilmsComponent } from './admin-films/admin-films.component';
 import { FilmMetaComponent } from './admin-films/components/film-meta/film-meta.component';
 import { FilmRemoveComponent } from './admin-films/components/film-remove/film-remove.component';
 
+/** Admin Module */
 @NgModule({
   imports: [
     SharedModule,

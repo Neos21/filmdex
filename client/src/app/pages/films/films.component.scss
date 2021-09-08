@@ -10,57 +10,55 @@ table {
   }
   
   .column-published-year {
-    min-width: 4.5rem;
+    min-width: 4rem;
     width: 1%;
-    max-width: 4.5rem;
+    max-width: 4rem;
     text-align: center;
     white-space: nowrap;
   }
   
   .column-title {
-    min-width: 13rem;
+    min-width: 15rem;
     width: 15%;
   }
   
   .column-scenario,
   .column-review {
-    min-width: 12rem;
+    min-width: 20rem;
     width: 25%;
   }
   
   .column-casts,
-  .column-staffs {
-    min-width: 5.5rem;
+  .column-staffs,
+  .column-tags {
+    min-width: 10rem;
     width: 10%;
   }
   
-  .column-tags {
-    min-width: 3.5rem;
-    width: 9%;
-  }
-  
   td {
+    --line-height: 1.2;
+    
+    padding: .2rem .25rem;
+    font-size: .8rem;
+    line-height: var(--line-height);
     word-break: break-all;
-    line-height: 1.2;
   }
   
-  // データ行のスタイル
+  td.column-published-year {
+    font-size: .95rem;
+  }
+  
   td.column-title {
     line-height: 1.3;
+    
+    .film-title {
+      font-size: .95rem;
+    }
     
     .japanese-title {
       color: var(--nn-colour-grey-700);
       font-size: .85rem;
     }
-  }
-  
-  td.column-scenario,
-  td.column-review,
-  td.column-casts,
-  td.column-staffs,
-  td.column-tags {
-    padding: .2rem .25rem;
-    font-size: .8rem;
   }
   
   .role {
@@ -71,4 +69,9 @@ table {
     padding: 1rem .5rem;
     text-align: center;
   }
+}
+
+.overflow {
+  max-height: calc(1em * 5 * var(--line-height));
+  overflow-y: auto;
 }

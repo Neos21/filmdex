@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { searchTargetColumns } from '../../../../../../server/src/classes/search-target-columns';
 
+/** 「検索フォーム」コンポーネント */
 @Component({
   selector: 'app-search-form',
   templateUrl: './search-form.component.html',

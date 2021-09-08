@@ -1,5 +1,9 @@
+import * as path from 'path';
+
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { ConfigModule } from '@nestjs/config';
 
 import { paths } from './scripts/export-to-json-function';
 
@@ -16,10 +20,10 @@ import { AppController } from './app.controller';
 /** App Module */
 @Module({
   imports: [
-    // https://docs.nestjs.com/techniques/database
+    // TypeORM : https://docs.nestjs.com/techniques/database
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: paths.sqliteDbFilePath,  // 標準は server/ 直下からのパス
+      database: paths.sqliteDbFilePath,  // SQLite DB ファイルのパス (デフォルトでは server/ 直下からのパスで解釈される)
       entities: [
         Film,
         Cast,
@@ -28,6 +32,14 @@ import { AppController } from './app.controller';
       ],
       synchronize: false,
       logging: false
+    }),
+    // ビルドした Angular 資材を配信する
+    ServeStaticModule.forRoot({
+      rootPath: path.join(__dirname, '../../client/dist')
+    }),
+    // 環境変数を読み込む
+    ConfigModule.forRoot({
+      isGlobal: true  // 全てのモジュールから利用できるようにする
     }),
     AuthModule,
     FilmsModule

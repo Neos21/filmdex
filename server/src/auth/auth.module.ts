@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 import { authConstants } from './auth-constants';
 import { LocalStrategy } from './local.strategy';
@@ -11,9 +12,12 @@ import { AuthController } from './auth.controller';
 @Module({
   imports: [
     PassportModule,
-    JwtModule.register({
-      secret: authConstants.jwtSecretKey,  // JwtStrategy で指定しているものと同じ値を入れておかないと `secretOrPrivateKey must have a value` エラーが発生する
-      signOptions: { expiresIn: authConstants.jwtTokenExpiresIn }  // JWT アクセストークンの有効期限 
+    JwtModule.registerAsync({
+      inject: [ConfigService], // useFactory で使うサービスを注入する
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('FILMDEX_JWT_SECRET_KEY'),  // 環境変数から注入する
+        signOptions: { expiresIn: authConstants.jwtTokenExpiresIn }  // JWT アクセストークンの有効期限
+      })
     })
   ],
   providers: [

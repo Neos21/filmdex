@@ -24,43 +24,46 @@
         <tr *ngFor="let film of films; let i = index">
           <td class="column-published-year">{{ film.publishedYear }}</td>
           <td class="column-title">
-            {{ film.title }}<br>
-            <span class="japanese-title" *ngIf="film.japaneseTitle">{{ film.japaneseTitle }}</span>
+            <div class="overflow">
+              <span class="film-title">{{ film.title }}</span>
+              <span class="japanese-title" *ngIf="film.japaneseTitle"><br>{{ film.japaneseTitle }}</span>
+            </div>
           </td>
           <td class="column-scenario">
-            <ng-container *ngIf="film.scenario; else noScenario">{{ film.scenario }}</ng-container>
-            <ng-template #noScenario>-</ng-template>
+            <div class="overflow">
+              <ng-container *ngIf="film.scenario; else noScenario">{{ film.scenario }}</ng-container>
+              <ng-template #noScenario>-</ng-template>
+            </div>
           </td>
           <td class="column-review">
-            <ng-container *ngIf="film.review; else noReview">{{ film.review }}</ng-container>
-            <ng-template #noReview>-</ng-template>
+            <div class="overflow">
+              <ng-container *ngIf="film.review; else noReview">{{ film.review }}</ng-container>
+              <ng-template #noReview>-</ng-template>
+            </div>
           </td>
           <td class="column-casts">
-            <ng-container *ngIf="film.casts.length; else noCasts">
-              <ng-container *ngFor="let cast of film.casts; let i = index; let l = count">
-                {{ cast.name }} <span class="role">({{ cast.role }})</span>
-                <ng-container *ngIf="i !== l - 1">、</ng-container>
+            <div class="overflow">
+              <ng-container *ngIf="film.casts.length; else noCasts">
+                <ng-container *ngFor="let cast of film.casts; let i = index; let l = count">{{ cast.name }} <span class="role">({{ cast.role }})</span><ng-container *ngIf="i !== l - 1">、</ng-container></ng-container>
               </ng-container>
-            </ng-container>
-            <ng-template #noCasts>-</ng-template>
+              <ng-template #noCasts>-</ng-template>
+            </div>
           </td>
           <td class="column-staffs">
-            <ng-container *ngIf="film.staffs.length; else noStaffs">
-              <ng-container *ngFor="let staff of film.staffs; let i = index; let l = count">
-                {{ staff.name }} <span class="role">({{ staff.role }})</span>
-                <ng-container *ngIf="i !== l - 1">、</ng-container>
+            <div class="overflow">
+              <ng-container *ngIf="film.staffs.length; else noStaffs">
+                <ng-container *ngFor="let staff of film.staffs; let i = index; let l = count">{{ staff.name }} <span class="role">({{ staff.role }})</span><ng-container *ngIf="i !== l - 1">、</ng-container></ng-container>
               </ng-container>
-            </ng-container>
-            <ng-template #noStaffs>-</ng-template>
+              <ng-template #noStaffs>-</ng-template>
+            </div>
           </td>
           <td class="column-tags">
-            <ng-container *ngIf="film.tags.length; else noTags">
-              <ng-container *ngFor="let tag of film.tags; let i = index; let l = count">
-                {{ tag.name }}
-                <ng-container *ngIf="i !== l - 1">、</ng-container>
+            <div class="overflow">
+              <ng-container *ngIf="film.tags.length; else noTags">
+                <ng-container *ngFor="let tag of film.tags; let i = index; let l = count">{{ tag.name }}<ng-container *ngIf="i !== l - 1">、</ng-container></ng-container>
               </ng-container>
-            </ng-container>
-            <ng-template #noTags>-</ng-template>
+              <ng-template #noTags>-</ng-template>
+            </div>
           </td>
         </tr>
       </ng-container>

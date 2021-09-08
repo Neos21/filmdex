@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 import { searchTargetColumns } from '../../../../../server/src/classes/search-target-columns';
 
-import filmdex from '../../../assets/filmdex.json';
-
+/** 「映画一覧」画面 */
 @Component({
   selector: 'app-films',
   templateUrl: './films.component.html',
@@ -11,7 +11,7 @@ import filmdex from '../../../assets/filmdex.json';
 })
 export class FilmsComponent implements OnInit {
   /** 映画情報一覧 */
-  public films: Array<Film>;
+  public films: Array<Film> = [];
   
   /** 現在の状態 : loading・loaded・searching・searched・'' */
   public currentState: string = 'loading';
@@ -20,13 +20,14 @@ export class FilmsComponent implements OnInit {
   public errorMessage: string = '';
   
   /** 全ての映画情報一覧 */
-  private allFilms: Array<Film> = filmdex;
+  private allFilms: Array<Film> = [];
   
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
   
   /** 画面初期表示時 */
-  public ngOnInit(): void {
-    this.onSearch();
+  public async ngOnInit(): Promise<void> {
+    await this.loadJson();
+    await this.onSearch();
   }
   
   /**
@@ -62,6 +63,18 @@ export class FilmsComponent implements OnInit {
    */
   public isDisabled(): boolean {
     return ['loading', 'searching'].includes(this.currentState);
+  }
+  
+  /** JSON ファイルを初回読み込みする */
+  private async loadJson(): Promise<void> {
+    try {
+      this.allFilms = await this.httpClient.get<Array<Film>>('/assets/filmdex.json').toPromise();
+      console.log('Films Component : Load JSON', this.allFilms);
+    }
+    catch(error) {
+      console.error('Films Component : Load JSON', error);
+      this.errorMessage = 'Failed To Load JSON';
+    }
   }
   
   /**

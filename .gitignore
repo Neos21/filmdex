@@ -5,12 +5,3 @@ Thumbs.db
 
 node_modules/
 dist/
-
-# SQLite
-*.sqlite
-*.sqlite3
-*.db
-
-# DB File・JSON File
-client/src/assets/*.json
-server/db/
