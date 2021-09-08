@@ -41,7 +41,7 @@ $ npm run build
 ```bash
 # Angular プロジェクトを開発モードでビルドし管理者画面を含ませる
 $ cd ./client/
-$ npm run build -- --configuration=development
+$ npm run build -- --configuration development
 # もしくは $ npm start で http://localhost:4200/ を利用しても良い
 
 # NestJS プロジェクトをビルドし ./client/dist/ を含んでサーバを配信する

@@ -43,8 +43,10 @@
       <ng-template #notFound>
         <tr>
           <td colspan="6" class="text-warning not-found">
-            <ng-container *ngIf="currentState === 'loading'   || currentState === 'loaded'"  >1件も映画が登録されていません</ng-container>
-            <ng-container *ngIf="currentState === 'searching' || currentState === 'searched'">条件に合致する映画はありません</ng-container>
+            <ng-container *ngIf="currentState === 'loading'"  >読込中…</ng-container>
+            <ng-container *ngIf="currentState === 'loaded'"   >1件も映画が登録されていません</ng-container>
+            <ng-container *ngIf="currentState === 'searching'">検索中…</ng-container>
+            <ng-container *ngIf="currentState === 'searched'" >条件に合致する映画はありません</ng-container>
           </td>
         </tr>
       </ng-template>

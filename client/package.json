@@ -7,6 +7,7 @@
     "sirv": "sirv",
     "start": "ng serve",
     "build": "ng build --base-href ./",
+    "build-dev": "ng build --base-href ./ --configuration development",
     "serve": "sirv ./dist/ --port 4200"
   },
   "author": "Neo <neos21@gmail.com> (https://neos21.net/)",
