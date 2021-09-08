@@ -1,10 +1,10 @@
 {
   "name": "filmdex-client",
-  "version": "0.0.0",
   "description": "FilmDeX Client",
   "private": true,
   "scripts": {
     "ng": "ng",
+    "sirv": "sirv",
     "start": "ng serve",
     "build": "ng build --base-href ./",
     "serve": "sirv ./dist/ --port 4200"

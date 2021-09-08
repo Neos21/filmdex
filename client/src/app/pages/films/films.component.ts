@@ -68,7 +68,8 @@ export class FilmsComponent implements OnInit {
   /** JSON ファイルを初回読み込みする */
   private async loadJson(): Promise<void> {
     try {
-      this.allFilms = await this.httpClient.get<Array<Film>>('/assets/filmdex.json').toPromise();
+      // 本コンポーネントが '/' で開かれることを前提に相対パスで記述する
+      this.allFilms = await this.httpClient.get<Array<Film>>('./assets/filmdex.json').toPromise();
       console.log('Films Component : Load JSON', this.allFilms);
     }
     catch(error) {

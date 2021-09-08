@@ -1,6 +1,5 @@
 {
   "name": "filmdex-server",
-  "version": "0.0.0",
   "description": "FilmDeX Server",
   "private": true,
   "scripts": {
