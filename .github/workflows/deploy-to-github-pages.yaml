@@ -13,19 +13,23 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      - name: Install
+      # クライアントビルド時に必要なためビルドしておく
+      - name: Server Install
+        working-directory: ./server
+        run : npm install
+      # ./server/db/filmdex.sqlite3.db からのエクスポートはしない
+      # ./client/src/assets/filmdex.json がそのままビルド資材に含まれる
+      - name: Client Install
         env :
-          # Stop Angular CLI asking for collecting analytics when I use ng build
           NG_CLI_ANALYTICS: ci
         working-directory: ./client
         run : npm install
-      - name: Build To dist/ Directory
+      - name: Client Build To dist/ Directory
         env :
           NG_CLI_ANALYTICS: ci
         working-directory: ./client
         run : npm run build
-        # ./server/db/filmdex.sqlite3.db からのエクスポートはしない
-      - name: Deploy
+      - name: Client Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           # GITHUB_TOKEN Secret は自動的に生成される
