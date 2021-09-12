@@ -1,37 +1,35 @@
 name: Deploy To GitHub Pages
 on:
-  push:
-    branches:
-      - master
+  # Every Sunday At 20:00 UTC = Every Monday At 05:00 JST
+  schedule:
+    - cron: '0 20 * * 0'
+  # Manual
+  workflow_dispatch:
 jobs:
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
-      # クライアントビルド時に必要なためビルドしておく
-      - name: Server Install
-        working-directory: ./server
+          node-version: 14.x
+      - name: Setup npm
         run : npm install
-      # ./server/db/filmdex.sqlite3.db からのエクスポートはしない
-      # ./client/src/assets/filmdex.json がそのままビルド資材に含まれる
-      - name: Client Install
         env :
           NG_CLI_ANALYTICS: ci
-        working-directory: ./client
-        run : npm install
-      - name: Client Build To dist/ Directory
+      - name: Fetch FilmDeX From Google Sheets
+        run : node ./fetch-filmdex.js
         env :
-          NG_CLI_ANALYTICS: ci
-        working-directory: ./client
+          GOOGLE_SHEETS_URL: ${{ secrets.GOOGLE_SHEETS_URL }}
+      - name: Build
         run : npm run build
-      - name: Client Deploy
+        env :
+          NG_CLI_ANALYTICS: ci
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           # GITHUB_TOKEN Secret は自動的に生成される
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./client/dist
+          publish_dir: ./dist

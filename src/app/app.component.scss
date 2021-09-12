@@ -1,0 +1,35 @@
+$padding-content: 1rem;
+
+.header {
+  align-items: center;
+  margin: 0;
+  padding: $padding-content;
+  line-height: 1;
+  white-space: nowrap;
+  background: var(--nn-colour-blue);
+  
+  a {
+    color: var(--nn-colour-white);
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  h1 {
+    margin: 0;
+  }
+  
+  .header-link {
+    font-size: .8rem;
+    
+    a {
+      color: var(--nn-colour-grey-200);
+    }
+  }
+}
+
+.main {
+  margin: $padding-content $padding-content 3rem;
+}

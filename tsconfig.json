@@ -1,0 +1,39 @@
+// https://angular.io/config/tsconfig.
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "module": "es2020",
+    "moduleResolution": "node",
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "outDir": "./dist-client/out-tsc",
+    "sourceMap": false,
+    "strict": true,
+    "strictPropertyInitialization": false,  // クラスプロパティの「初期化漏れ」を許容する (string 型のプロパティが undefined になるとエラーになるがコレを許容する)
+    "suppressImplicitAnyIndexErrors": true,  // クラスプロパティにブラケット記法でアクセスできるようにする
+    "target": "es2017"
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  },
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
+}

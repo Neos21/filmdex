@@ -1,0 +1,18 @@
+<form class="grid-2-columns" [formGroup]="searchForm" (submit)="onSearch()">
+  <div class="input-controls">
+    <select formControlName="targetColumn" (change)="onChangeSearchTargetColumn()">
+      <option *ngFor="let searchTargetColumn of searchTargetColumns" [ngValue]="searchTargetColumn.value">{{ searchTargetColumn.name }}</option>
+    </select>
+    
+    <input type="text" placeholder="検索文字列" formControlName="searchText" *ngIf="searchForm.controls.targetColumn.value !== 'published_age'; else publishedAge" [ngClass]="{ invalid: isInvalidPublishedYear() }">
+    <ng-template #publishedAge>
+      <select formControlName="publishedAge" (change)="onChangeSearchPublishedAge()">
+        <option *ngFor="let searchPublishedAge of searchPublishedAges" [ngValue]="searchPublishedAge.age">{{ searchPublishedAge.age }} 年代</option>
+      </select>
+    </ng-template>
+    
+    <button type="submit" [disabled]="isDisabled || searchForm.invalid || isInvalidPublishedYear()">検索</button>
+  </div>
+  
+  <div class="reload-container"><button type="button" [disabled]="isDisabled" (click)="onReload()">Reload</button></div>
+</form>
