@@ -1,0 +1,81 @@
+// 横スクロールを出す
+.table-wrapper {
+  margin: 2rem 0;
+  overflow-x: auto;
+}
+
+table {
+  --line-height: 1.2;
+  
+  margin: 0;
+  width: 100%;
+  
+  .column-published-year {
+    max-width: 4rem;  // こう書かないと列幅を固定できない
+        width: 1%;
+    min-width: 4rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  .column-title {
+    min-width: 15rem;
+    width: 15%;
+  }
+  
+  .column-scenario,
+  .column-review {
+    min-width: 20rem;
+    width: 25%;
+  }
+  
+  .column-casts,
+  .column-staffs,
+  .column-tags {
+    min-width: 10rem;
+    width: 10%;
+  }
+}
+
+th {
+  white-space: nowrap;
+  background: #f3fcff;
+}
+
+td {
+  padding: .2rem .25rem;
+  font-size: .8rem;
+  line-height: var(--line-height);
+  word-break: break-all;
+  
+  // 5行以上はスクロールさせる
+  .overflow {
+    max-height: calc(1em * 5 * var(--line-height));
+    overflow-y: auto;
+  }
+  
+  &.column-published-year {
+    font-size: .95rem;
+  }
+  
+  &.column-title {
+    font-size: .95rem;
+    line-height: 1.3;
+    
+    .japanese-title {
+      color: var(--nn-colour-grey-700);
+      font-size: .85rem;
+    }
+  }
+}
+
+.not-found {
+  padding: 1rem .5rem;
+  color: var(--nn-colour-yellow);
+  font-weight: bold; 
+  text-align: center;
+  
+  strong {  // エラー時
+    color: var(--nn-colour-red);
+  }
+}

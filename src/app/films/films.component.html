@@ -1,0 +1,44 @@
+<app-search-form [isDisabled]="isDisabled()" (onSubmit)="onSearch($event)"></app-search-form>
+
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th class="column-published-year">公開年</th>
+        <th class="column-title"         >原題・邦題</th>
+        <th class="column-scenario"      >あらすじ</th>
+        <th class="column-review"        >感想</th>
+        <th class="column-casts"         >キャスト</th>
+        <th class="column-staffs"        >スタッフ</th>
+        <th class="column-tags"          >タグ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngIf="films.length > 0; else notFound">
+        <tr *ngFor="let film of films; let i = index">
+          <td class="column-published-year">{{ film.publishedYear }}</td>
+          <td class="column-title"         ><div class="overflow">{{ film.title    }}<div class="japanese-title" *ngIf="film.japaneseTitle">{{ film.japaneseTitle }}</div></div></td>
+          <td class="column-scenario"      ><div class="overflow">{{ film.scenario }}</div></td>
+          <td class="column-review"        ><div class="overflow">{{ film.review   }}</div></td>
+          <td class="column-casts"         ><div class="overflow">{{ film.casts    }}</div></td>
+          <td class="column-staffs"        ><div class="overflow">{{ film.staffs   }}</div></td>
+          <td class="column-tags"          ><div class="overflow">{{ film.tags     }}</div></td>
+        </tr>
+      </ng-container>
+      
+      <ng-template #notFound>
+        <tr>
+          <td colspan="6" class="not-found">
+            <strong *ngIf="isLoadedAllFilms === false; else notFoundMessage">映画情報の取得に失敗しました</strong>
+            <ng-template #notFoundMessage>
+              <ng-container *ngIf="currentState === 'loading'"  >読込中…</ng-container>
+              <ng-container *ngIf="currentState === 'loaded'"   >1件も映画が登録されていません</ng-container>
+              <ng-container *ngIf="currentState === 'searching'">検索中…</ng-container>
+              <ng-container *ngIf="currentState === 'searched'" >条件に合致する映画はありません</ng-container>
+            </ng-template>
+          </td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </table>
+</div>

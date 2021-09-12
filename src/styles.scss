@@ -1,0 +1,8 @@
+@import '../node_modules/@neos21/neos-normalize/neos-normalize.css';
+
+// 2列を両端揃えにする
+.grid-2-columns {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: space-between;
+}

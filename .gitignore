@@ -2,16 +2,8 @@
 Thumbs.db
 
 *.log
-nohup.out
 
 node_modules/
 dist/
 
-# 環境変数ファイル
-.env
-
-# SQLite DB ファイル
-*.sqlite
-*.sqlite3
-*.db
-!server/db/filmdex.sqlite3.db
+# src/assets/filmdex.json はバックアップを兼ねて Git 管理にしてしまう
