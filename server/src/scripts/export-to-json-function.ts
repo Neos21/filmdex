@@ -58,8 +58,7 @@ export async function select(filmsRepository: any): Promise<Array<any>> {
     .leftJoinAndSelect('films.casts' , 'casts' )
     .leftJoinAndSelect('films.staffs', 'staffs')
     .leftJoinAndSelect('films.tags'  , 'tags'  )
-    .orderBy   ('published_year', 'ASC')
-    .addOrderBy('title'         , 'ASC')
+    .orderBy   ('id', 'ASC')
     .addOrderBy('casts.order'   , 'ASC')
     .addOrderBy('staffs.order'  , 'ASC')
     .addOrderBy('tags.order'    , 'ASC')
@@ -72,7 +71,6 @@ export async function select(filmsRepository: any): Promise<Array<any>> {
  * @param item Film・Cast・Staff・Tag などのエンティティクラス
  */
 export function removeMetaForEachFunction(item: any): void {
-  delete item.id;
   delete item.filmId;
   delete item.order;
   delete item.createdAt;
