@@ -50,7 +50,7 @@ td {
   
   // 5行以上はスクロールさせる
   .overflow {
-    max-height: calc(1em * 5 * var(--line-height));
+    max-height: calc(1em * 5 * var(--line-height) + 2px);  // ピッタリだとスクロールバーが出るので 1px ちょい広げておく
     overflow-y: auto;
   }
   
