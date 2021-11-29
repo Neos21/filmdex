@@ -2,7 +2,7 @@
 
 観た映画の情報・感想を一覧表示するウェブアプリです。
 
-- __[Enter The Web Site](https://neos21.github.io/filmdex/)__
+- __[Enter The WebSite](https://neos21.github.io/filmdex/)__
 
 
 ## Architecture
