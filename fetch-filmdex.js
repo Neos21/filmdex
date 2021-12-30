@@ -135,14 +135,14 @@ function parseToJson(text) {
 function validateHeaderColumns(header) {
   /** 見出し行データとして想定する文言 */
   const expectedHeader = [
-    ['Published Year', '公開年'],
-    ['Title'         , '原題'],
-    ['Japanese Title', '邦題'],
+    ['Published Year', '公開年'  ],
+    ['Title'         , '原題'    ],
+    ['Japanese Title', '邦題'    ],
     ['Scenario'      , 'あらすじ'],
-    ['Review'        , '感想'],
+    ['Review'        , '感想'    ],
     ['Casts'         , 'キャスト'],
     ['Staffs'        , 'スタッフ'],
-    ['Tags'          , 'タグ']
+    ['Tags'          , 'タグ'    ]
   ];
   
   // 列数が一致していること
@@ -168,7 +168,7 @@ function validateHeaderColumns(header) {
  */
 function convertToFilms(values) {
   return values.map((row, index) => {
-    // 「公開年」と「原題」は必須とする・その他の要素も空セルにしないこと (後続が空値のみの列のみだと配列の要素ごと少なくなる)
+    // 「公開年」と「原題」は必須とする・後続が空値のみの列のみだと配列の要素ごと少なくなる
     if(row.length < 2) {
       console.error('Invalid Row Data', { index, row });
       throw new Error('Invalid Row Data');
@@ -179,15 +179,15 @@ function convertToFilms(values) {
       throw new Error('Invalid Published Year Data');
     }
     
-    return {  // Film クラス相当の連想配列にする
+    return {  // Film クラス相当の連想配列にする・空白や改行は除去する
       publishedYear: Number(row[0]),
-      title        : row[1] ?? '(データなし)',
-      japaneseTitle: row[2] ?? '(データなし)',
-      scenario     : row[3] ?? '(データなし)',
-      review       : row[4] ?? '(データなし)',
-      casts        : row[5] ?? '(データなし)',
-      staffs       : row[6] ?? '(データなし)',
-      tags         : row[7] ?? '(データなし)'
+      title        : row[1] == null ? '' : String(row[1]).trim().replace((/\n/gu), ''),
+      japaneseTitle: row[2] == null ? '' : String(row[2]).trim().replace((/\n/gu), ''),
+      scenario     : row[3] == null ? '' : String(row[3]).trim().replace((/\n/gu), ''),
+      review       : row[4] == null ? '' : String(row[4]).trim().replace((/\n/gu), ''),
+      casts        : row[5] == null ? '' : String(row[5]).trim().replace((/\n/gu), ''),
+      staffs       : row[6] == null ? '' : String(row[6]).trim().replace((/\n/gu), ''),
+      tags         : row[7] == null ? '' : String(row[7]).trim().replace((/\n/gu), '')
     };
   })
     .sort((filmA, filmB) => {

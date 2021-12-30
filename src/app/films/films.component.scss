@@ -48,6 +48,16 @@ td {
   line-height: var(--line-height);
   word-break: break-all;
   
+  // 空値
+  &.empty {
+    background: var(--nn-colour-grey-200);
+  }
+  
+  // ハイフンのみ
+  &.blank {
+    background: var(--nn-colour-grey-100);
+  }
+  
   // 5行以上はスクロールさせる
   .overflow {
     max-height: calc(1em * 5 * var(--line-height) + 2px);  // ピッタリだとスクロールバーが出るので 1px ちょい広げておく

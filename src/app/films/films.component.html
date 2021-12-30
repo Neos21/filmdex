@@ -17,12 +17,12 @@
       <ng-container *ngIf="films.length > 0; else notFound">
         <tr *ngFor="let film of films; let i = index">
           <td class="column-published-year">{{ film.publishedYear }}</td>
-          <td class="column-title"         ><div class="overflow">{{ film.title    }}<div class="japanese-title" *ngIf="film.japaneseTitle">{{ film.japaneseTitle }}</div></div></td>
-          <td class="column-scenario"      ><div class="overflow">{{ film.scenario }}</div></td>
-          <td class="column-review"        ><div class="overflow">{{ film.review   }}</div></td>
-          <td class="column-casts"         ><div class="overflow">{{ film.casts    }}</div></td>
-          <td class="column-staffs"        ><div class="overflow">{{ film.staffs   }}</div></td>
-          <td class="column-tags"          ><div class="overflow">{{ film.tags     }}</div></td>
+          <td class="column-title"         ><div class="overflow">{{ film.title }}<div class="japanese-title" *ngIf="film.japaneseTitle">{{ film.japaneseTitle }}</div></div></td>
+          <td class="column-scenario" [ngClass]="{ empty: film.scenario === '', blank: film.scenario === '-' }"><div class="overflow">{{ film.scenario }}</div></td>
+          <td class="column-review"   [ngClass]="{ empty: film.review   === '', blank: film.review   === '-' }"><div class="overflow">{{ film.review   }}</div></td>
+          <td class="column-casts"    [ngClass]="{ empty: film.casts    === '', blank: film.casts    === '-' }"><div class="overflow">{{ film.casts    }}</div></td>
+          <td class="column-staffs"   [ngClass]="{ empty: film.staffs   === '', blank: film.staffs   === '-' }"><div class="overflow">{{ film.staffs   }}</div></td>
+          <td class="column-tags"     [ngClass]="{ empty: film.tags     === '', blank: film.tags     === '-' }"><div class="overflow">{{ film.tags     }}</div></td>
         </tr>
       </ng-container>
       

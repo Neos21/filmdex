@@ -3,12 +3,16 @@
   "description": "FilmDeX",
   "private": true,
   "scripts": {
-    "ng": "ng",
-    "sirv": "sirv",
-    "start": "ng serve",
-    "build": "ng build --base-href ./",
-    "serve": "sirv ./dist/ --port 4200",
-    "fetch": "node ./fetch-filmdex.js"
+    "ng"    : "ng",
+    "sirv"  : "sirv",
+    "?start": "echo 'Start Dev Server'",
+     "start": "ng serve",
+    "?build": "echo 'Build'",
+     "build": "ng build --base-href ./",
+    "?serve": "echo 'Start Server'",
+     "serve": "sirv ./dist/ --port 4200",
+    "?fetch": "echo 'Fetch SpreadSheet. Use Envirionment Variable GOOGLE_SHEETS_URL'",
+     "fetch": "node ./fetch-filmdex.js"
   },
   "author": "Neo <neos21@gmail.com> (https://neos21.net/)",
   "license": "MIT",
