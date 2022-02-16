@@ -29,7 +29,7 @@ const distAssetsFilePath      = path.resolve(distAssetsDirectoryPath, jsonFileNa
   const json = parseToJson(result);
   
   // 見出し行からフォーマットをチェックする
-  const header = json.values.shift();  // データの先頭1行が見出し・ココで `json.values` の先頭行を削除している
+  const header = json.values.shift();  // データの先頭1行が見出し・ココで json.values の先頭行が削除される
   validateHeaderColumns(header);
   
   // 映画情報一覧に変換・ソートする
@@ -91,7 +91,7 @@ async function fetch(url) {
     return result;
   }
   catch(error) {
-    console.error('Failed To Request');
+    console.error('Failed To Request', error);
     throw error;
   }
 }
@@ -129,11 +129,11 @@ function parseToJson(text) {
  * 取得したスプレッドシートの1行目を確認し、正しいフォーマットかどうか確認する
  * 
  * @param {Array<string>} header ヘッダ行
- * @return {boolean} 列数・列名・列順が全て正しければ true
+ * @return {boolean} 列名・列順が全て正しければ true
  * @throws 不正なフォーマットだった場合
  */
 function validateHeaderColumns(header) {
-  /** 見出し行データとして想定する文言 */
+  /** 見出し行として想定する列順と文言・現状は英語表記が合致する想定 */
   const expectedHeader = [
     ['Published Year', '公開年'  ],
     ['Title'         , '原題'    ],
@@ -142,20 +142,18 @@ function validateHeaderColumns(header) {
     ['Review'        , '感想'    ],
     ['Casts'         , 'キャスト'],
     ['Staffs'        , 'スタッフ'],
-    ['Tags'          , 'タグ'    ]
+    ['Tags'          , 'タグ'    ]  // コレ以降に列が存在しても無視する
   ];
   
-  // 列数が一致していること
-  if(expectedHeader.length !== header.length) {
-    console.error(`Number Of Header Columns Is Invalid`, { expectedHeaderLength: expectedHeader.length, headerLength: header.length, header: header });
-    throw new Error('Number Of Header Columns Is Invalid');
-  }
-  
-  // 全ての列名について想定文言のいずれかに合致すること
-  const isValid = header.every((columnName, index) => {
-    return expectedHeader[index].some((expectedColumnName) => columnName === expectedColumnName);
+  // ヘッダ行の各列について想定文言のいずれかに合致すること
+  const isValid = expectedHeader.every((expectedColumnValues, index) => {
+    const columnValue = header[index];
+    return expectedColumnValues.some((expectedColumnValue) => columnValue === expectedColumnValue);
   });
-  if(!isValid) throw new Error('Invalid Header Columns');
+  if(!isValid) {
+    console.error('Invalid Header Columns', header);
+    throw new Error('Invalid Header Columns');
+  }
   
   return isValid;
 }
@@ -168,26 +166,27 @@ function validateHeaderColumns(header) {
  */
 function convertToFilms(values) {
   return values.map((row, index) => {
-    // 「公開年」と「原題」は必須とする・後続が空値のみの列のみだと配列の要素ごと少なくなる
+    // 「公開年」と「原題」の2列は必須とする・後続列が空値のみだと配列の要素ごと少なくなる
     if(row.length < 2) {
       console.error('Invalid Row Data', { index, row });
       throw new Error('Invalid Row Data');
     }
-    // 1列目のデータが数値型に変換できなければ不正値とみなす
-    if(Number.isNaN(Number(row[0]))) {
+    // 1列目のデータ (公開年) が数値型に変換できなければ不正値とみなす
+    const publishedYear = Number(row[0]);
+    if(Number.isNaN(publishedYear)) {
       console.error('Invalid Published Year Data', { index, row });
       throw new Error('Invalid Published Year Data');
     }
     
-    return {  // Film クラス相当の連想配列にする・空白や改行は除去する
-      publishedYear: Number(row[0]),
-      title        : row[1] == null ? '' : String(row[1]).trim().replace((/\n/gu), ''),
-      japaneseTitle: row[2] == null ? '' : String(row[2]).trim().replace((/\n/gu), ''),
-      scenario     : row[3] == null ? '' : String(row[3]).trim().replace((/\n/gu), ''),
-      review       : row[4] == null ? '' : String(row[4]).trim().replace((/\n/gu), ''),
-      casts        : row[5] == null ? '' : String(row[5]).trim().replace((/\n/gu), ''),
-      staffs       : row[6] == null ? '' : String(row[6]).trim().replace((/\n/gu), ''),
-      tags         : row[7] == null ? '' : String(row[7]).trim().replace((/\n/gu), '')
+    return {  // Film クラス相当の連想配列にする
+      publishedYear: publishedYear,
+      title        : convertToOneLineString(row[1]),
+      japaneseTitle: convertToOneLineString(row[2]),
+      scenario     : convertToOneLineString(row[3]),
+      review       : convertToOneLineString(row[4]),
+      casts        : convertToOneLineString(row[5]),
+      staffs       : convertToOneLineString(row[6]),
+      tags         : convertToOneLineString(row[7])
     };
   })
     .sort((filmA, filmB) => {
@@ -200,6 +199,17 @@ function convertToFilms(values) {
       // 同一値なら 0 を返す
       return 0;
     });
+  
+  /**
+   * セルの値を文字列に変換し空白や改行を除去する
+   * Google スプレッドシート API はセルの値を必ず文字列型で返すようだが念のため String() で文字列化しておく
+   * 
+   * @param {string|number|null|undefined} value 値
+   * @return {string} 値が存在しない場合は空文字・値が存在すれば空白をトリムし改行を除去した文字列
+   */
+  function convertToOneLineString(value) {
+    return value == null ? '' : String(value).trim().replace((/\n/gu), '');
+  }
 }
 
 /**

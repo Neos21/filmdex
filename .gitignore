@@ -6,4 +6,7 @@ Thumbs.db
 node_modules/
 dist/
 
-# src/assets/filmdex.json はバックアップを兼ねて Git 管理にしてしまう
+# src/assets/filmdex.json はバックアップを兼ねて Git 管理を許可する
+
+# プライベートメモ用
+MEMO.md
