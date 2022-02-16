@@ -22,7 +22,7 @@ const distAssetsDirectoryPath = path.resolve(__dirname, './dist/assets/');
 const distAssetsFilePath      = path.resolve(distAssetsDirectoryPath, jsonFileName);
 
 (async () => {
-  console.log('Fetch FilmDeX : Start');
+  console.log(new Date().toISOString(), 'Fetch FilmDeX : Start');
   
   // スプレッドシートを取得する
   const result = await fetch(url);
@@ -45,7 +45,7 @@ const distAssetsFilePath      = path.resolve(distAssetsDirectoryPath, jsonFileNa
     await copyFile(srcAssetsFilePath, distAssetsFilePath);
   }
   
-  console.log('Fetch FilmDeX : Finished');
+  console.log(new Date().toISOString(), 'Fetch FilmDeX : Finished');
 })();
 
 /**

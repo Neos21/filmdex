@@ -1,6 +1,8 @@
 $padding-content: 1rem;
 
-.header {
+.header {  // .grid-2-columns も指定してある
+  overflow-x: hidden;  // 画面幅が狭い時も横スクロールバーを発生させない
+  column-gap: .5rem;
   align-items: center;
   margin: 0;
   padding: $padding-content;

@@ -1,5 +1,9 @@
 name: Deploy To GitHub Pages
 on:
+  # On Commit
+  push:
+    branches:
+      - master
   # Every Sunday At 20:00 UTC = Every Monday At 05:00 JST
   schedule:
     - cron: '0 20 * * 0'
