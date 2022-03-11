@@ -28,7 +28,7 @@
       
       <ng-template #notFound>
         <tr>
-          <td colspan="6" class="not-found">
+          <td colspan="7" class="not-found">
             <strong *ngIf="isLoadedAllFilms === false; else notFoundMessage">映画情報の取得に失敗しました</strong>
             <ng-template #notFoundMessage>
               <ng-container *ngIf="currentState === 'loading'"  >読込中…</ng-container>
