@@ -21,7 +21,7 @@ export class FilmsComponent implements OnInit {
   public currentState: string = 'loading';
   
   /** 全ての映画情報一覧 */
-  private allFilms: Array<Film> = [];
+  public allFilms: Array<Film> = [];
   
   constructor(private httpClient: HttpClient) { }
   

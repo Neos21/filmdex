@@ -1,9 +1,11 @@
 <app-search-form [isDisabled]="isDisabled()" (onSubmit)="onSearch($event)"></app-search-form>
 
+<div class="count">{{ films.length }} / {{ allFilms.length }} 件</div>
 <div class="table-wrapper">
   <table>
     <thead>
       <tr>
+        <th class="column-no"            >No</th>
         <th class="column-published-year">公開年</th>
         <th class="column-title"         >原題・邦題</th>
         <th class="column-scenario"      >あらすじ</th>
@@ -16,6 +18,7 @@
     <tbody>
       <ng-container *ngIf="films.length > 0; else notFound">
         <tr *ngFor="let film of films; let i = index">
+          <td class="column-no"            >{{ i + 1 }}</td>
           <td class="column-published-year">{{ film.publishedYear }}</td>
           <td class="column-title"         ><div class="overflow">{{ film.title }}<div class="japanese-title" *ngIf="film.japaneseTitle">{{ film.japaneseTitle }}</div></div></td>
           <td class="column-scenario" [ngClass]="{ empty: film.scenario === '', blank: film.scenario === '-' }"><div class="overflow">{{ film.scenario }}</div></td>
@@ -28,7 +31,7 @@
       
       <ng-template #notFound>
         <tr>
-          <td colspan="7" class="not-found">
+          <td colspan="8" class="not-found">
             <strong *ngIf="isLoadedAllFilms === false; else notFoundMessage">映画情報の取得に失敗しました</strong>
             <ng-template #notFoundMessage>
               <ng-container *ngIf="currentState === 'loading'"  >読込中…</ng-container>

@@ -1,6 +1,11 @@
+.count {
+  margin: 1.5rem 0 .5rem;
+  text-align: right;
+}
+
 // 横スクロールを出す
 .table-wrapper {
-  margin: 2rem 0;
+  margin: .5rem 0 2rem;
   overflow-x: auto;
 }
 
@@ -10,6 +15,13 @@ table {
   margin: 0;
   width: 100%;
   
+  .column-no {
+    max-width: 3.5rem;  // こう書かないと列幅を固定できない
+        width: 1%;
+    min-width: 3.5rem;
+    text-align: center;
+    white-space: nowrap;
+  }
   .column-published-year {
     max-width: 4rem;  // こう書かないと列幅を固定できない
         width: 1%;
@@ -64,6 +76,7 @@ td {
     overflow-y: auto;
   }
   
+  &.column-no,
   &.column-published-year {
     font-size: .95rem;
   }
