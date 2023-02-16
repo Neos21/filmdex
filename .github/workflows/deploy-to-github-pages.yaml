@@ -18,7 +18,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 16.x
+          node-version: 18.x
       - name: Setup npm
         run : npm install
         env :
@@ -28,7 +28,7 @@ jobs:
         env :
           GOOGLE_SHEETS_URL: ${{ secrets.GOOGLE_SHEETS_URL }}
       - name: Build
-        run : NODE_OPTIONS='--openssl-legacy-provider' npm run build
+        run : npm run build
         env :
           NG_CLI_ANALYTICS: ci
       - name: Deploy
