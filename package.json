@@ -3,16 +3,16 @@
   "description": "FilmDeX",
   "private": true,
   "scripts": {
-    "ng"    : "ng",
-    "sirv"  : "sirv",
+    "ng": "ng",
+    "sirv": "sirv",
     "?start": "echo 'Start Dev Server'",
-     "start": "ng serve",
+    "start": "ng serve",
     "?build": "echo 'Build'",
-     "build": "ng build --base-href ./",
+    "build": "ng build --base-href ./",
     "?serve": "echo 'Start Server'",
-     "serve": "sirv ./dist/ --port 4200",
+    "serve": "sirv ./dist/ --port 4200",
     "?fetch": "echo 'Fetch SpreadSheet. Use Envirionment Variable GOOGLE_SHEETS_URL'",
-     "fetch": "node ./fetch-filmdex.js"
+    "fetch": "node ./fetch-filmdex.js"
   },
   "author": "Neo <neos21@gmail.com> (https://neos21.net/)",
   "license": "MIT",
@@ -46,6 +46,7 @@
     "@angular-devkit/build-angular": "12.2.2",
     "@angular/cli": "12.2.2",
     "@angular/compiler-cli": "12.2.2",
+    "@types/estree": "1.0.1",
     "@types/node": "12.20.20",
     "sirv-cli": "1.0.14",
     "typescript": "4.3.5"
