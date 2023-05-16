@@ -27,10 +27,14 @@ jobs:
         run : node ./fetch-filmdex.js
         env :
           GOOGLE_SHEETS_URL: ${{ secrets.GOOGLE_SHEETS_URL }}
+          # Bug Fix
+          NODE_OPTIONS: '--openssl-legacy-provider'
       - name: Build
         run : npm run build
         env :
           NG_CLI_ANALYTICS: ci
+          # Bug Fix
+          NODE_OPTIONS: '--openssl-legacy-provider'
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
